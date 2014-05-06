@@ -1,0 +1,10 @@
+[
+{
+  "modid": "miscarrows",
+  "name": "Misc Arrows",
+  "description": "Adds different arrow types to Minecraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "authors": ["killjoy1221"],
+}
+]

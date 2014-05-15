@@ -14,6 +14,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
+import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 import com.google.common.collect.Lists;
 
@@ -41,7 +42,7 @@ public class ItemMiscBow extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || player.inventory.hasItem(Items.arrow))
+        if (flag || player.inventory.hasItem(MiscArrows.arrow))
         {
             float f = (float)j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -84,37 +85,40 @@ public class ItemMiscBow extends ItemBow {
 
             stack.damageItem(1, player);
             world.playSoundAtEntity(player, "random.bow", 1.0F, 1.0F / (itemRand.nextFloat() * 0.4F + 1.2F) + f * 0.5F);
-
-            if (flag)
-            {
-                entityarrow.canBePickedUp = 2;
-            }
-            else
-            {
-                player.inventory.consumeInventoryItem(Items.arrow);
+            if(flag){
+            	entityarrow.canBePickedUp = 2;
+            }else{
+            	player.inventory.consumeInventoryItem(Items.arrow);
             }
 
             if (!world.isRemote)
             {
                 world.spawnEntityInWorld(entityarrow);
             }
-        }this.setTextureName("miscarrows:misc_bow_standby");
+        }
 	}
 	
+	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+    {
+        ArrowNockEvent event = new ArrowNockEvent(par3EntityPlayer, par1ItemStack);
+        MinecraftForge.EVENT_BUS.post(event);
+        if (event.isCanceled())
+        {
+            return event.result;
+        }
+
+        if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(MiscArrows.arrow))
+        {
+            par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
+        }
+
+        return par1ItemStack;
+    }
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack){
 		return EnumAction.bow;
 	}
 	
-	@Override
-	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player)
-    {
-		if(player.isSneaking()){
-			
-		}
-		return itemStack;
-		
-    }
 	
 	private int getArrowTypes(EntityPlayer player){
 		int types = 0;

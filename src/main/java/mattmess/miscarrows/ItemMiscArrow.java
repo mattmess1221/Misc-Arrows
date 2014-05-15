@@ -1,74 +1,90 @@
 package mattmess.miscarrows;
 
-import net.minecraft.entity.player.EntityPlayer;
+import java.util.List;
+
+import net.minecraft.client.renderer.texture.IIconRegister;
+import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
-import net.minecraft.potion.Potion;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.IIcon;
 
 public class ItemMiscArrow extends Item {
-	
-	public ItemMiscArrow(Effect effect){
-		this.setUnlocalizedName("misc_arrow" + (effect.getName() == "" ? "" : ".") + effect.getName());
-		this.setTextureName("miscarrows:misc_arrow" + (effect.getName() == "" ? "" : "_") + effect.getName());
-		this.setCreativeTab(MiscArrows.tab);
-		this.setEffect(effect);
-	}
-	
-	private Effect effect;
 
-	public void setEffect(Effect effect){
-		this.effect = effect;
-		if(effect.equals(Effect.ITEM)){
-			this.setMaxStackSize(1);
+	private IIcon fire, ice, slime, potion, teleport, explosive, item;
+
+	public ItemMiscArrow() {
+		this.setUnlocalizedName("misc_arrow");
+		this.setTextureName("miscarrows:misc_arrow");
+		this.setCreativeTab(MiscArrows.tab);
+	}
+
+	@Override
+	public IIcon getIconFromDamage(int damage) {
+		switch (damage) {
+		case 1:
+			return fire;
+		case 2:
+			return ice;
+		case 3:
+			return slime;
+		case 4:
+			return potion;
+		case 5:
+			return teleport;
+		case 6:
+			return explosive;
+		case 7:
+			return item;
 		}
+		return super.getIconFromDamage(damage);
 	}
-	public Effect getEffect(){
-		return this.effect;
+
+	public void registerIcons(IIconRegister icon) {
+		super.registerIcons(icon);
+		fire = icon.registerIcon("miscarrows:misc_arrow_fire");
+		ice = icon.registerIcon("miscarrows:misc_arrow_ice");
+		slime = icon.registerIcon("miscarrows:misc_arrow_slime");
+		potion = icon.registerIcon("miscarrows:misc_arrow_potion");
+		teleport = icon.registerIcon("miscarrows:misc_arrow_teleport");
+		explosive = icon.registerIcon("miscarrows:misc_arrow_explosive");
+		item = icon.registerIcon("miscarrows:misc_arrow_item");
 	}
-	public void openInventory(EntityPlayer player){
-		if(effect.equals(Effect.ITEM)){
-			
+
+	@Override
+	public String getUnlocalizedName(ItemStack itemStack){
+		String name = getUnlocalizedName();
+		switch(itemStack.getItemDamage()){
+		case 1:
+			return name + ".fire";
+		case 2:
+			return name + ".ice";
+		case 3:
+			return name + ".slime";
+		case 4:
+			return name + ".potion";
+		case 5:
+			return name + ".teleport";
+		case 6:
+			return name + ".explosive";
+		case 7:
+			return name + ".item";
 		}
-	}
-	public void onUse(){
-		
+		return name + ".normal";
 	}
 	
-	public static enum Effect{
-		NORMAL, FIRE, ICE, SLIME, POTION, TELEPORT, EXPLOSIVE, ITEM;
-		
-		private Potion potion = null;
-		
-		private Effect(){
-			
-		}
-		
-		public Potion getPotionEffect(){
-			if(!this.equals(POTION))
-				return null;
-			
-			return null;
-		}
-		public void setPotionEffect(Potion potion){
-			if(!this.equals(POTION))
-				return;	
-			this.potion = potion;
-		}
-		public String getName(){
-			if(this.equals(FIRE))
-				return "fire";
-			if(this.equals(ICE))
-				return "ice";
-			if(this.equals(SLIME))
-				return "slime";
-			if(this.equals(POTION))
-				return "potion";
-			if(this.equals(TELEPORT))
-				return "teleport";
-			if(this.equals(EXPLOSIVE))
-				return "explosive";
-			if(this.equals(ITEM))
-				return "item";
-			return "normal";
-		}
+	@Override
+	public void getSubItems(Item item, CreativeTabs tab, List list) {
+		list.add(MiscArrows.explosiveArrow);
+		list.add(MiscArrows.fireArrow);
+		list.add(MiscArrows.iceArrow);
+		list.add(MiscArrows.itemArrow);
+		list.add(MiscArrows.potionArrow);
+		list.add(MiscArrows.teleportArrow);
+		list.add(MiscArrows.slimeArrow);
 	}
+
+	public void onUse() {
+
+	}
+
 }

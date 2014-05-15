@@ -6,6 +6,13 @@ import net.minecraft.potion.Potion;
 
 public class ItemMiscArrow extends Item {
 	
+	public ItemMiscArrow(Effect effect){
+		this.setUnlocalizedName("misc_arrow" + (effect.getName() == "" ? "" : ".") + effect.getName());
+		this.setTextureName("miscarrows:misc_arrow" + (effect.getName() == "" ? "" : "_") + effect.getName());
+		this.setCreativeTab(MiscArrows.tab);
+		this.setEffect(effect);
+	}
+	
 	private Effect effect;
 
 	public void setEffect(Effect effect){
@@ -30,7 +37,8 @@ public class ItemMiscArrow extends Item {
 		NORMAL, FIRE, ICE, SLIME, POTION, TELEPORT, EXPLOSIVE, ITEM;
 		
 		private Potion potion = null;
-		Effect(){
+		
+		private Effect(){
 			
 		}
 		
@@ -44,6 +52,23 @@ public class ItemMiscArrow extends Item {
 			if(!this.equals(POTION))
 				return;	
 			this.potion = potion;
+		}
+		public String getName(){
+			if(this.equals(FIRE))
+				return "fire";
+			if(this.equals(ICE))
+				return "ice";
+			if(this.equals(SLIME))
+				return "slime";
+			if(this.equals(POTION))
+				return "potion";
+			if(this.equals(TELEPORT))
+				return "teleport";
+			if(this.equals(EXPLOSIVE))
+				return "explosive";
+			if(this.equals(ITEM))
+				return "item";
+			return "";
 		}
 	}
 }

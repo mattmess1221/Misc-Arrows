@@ -23,7 +23,8 @@ public class ItemMiscBow extends ItemBow {
 	public ItemMiscBow(){
 		super();
 		this.setUnlocalizedName("misc_bow");
-		this.setTextureName("miscarrows:misc_bow_standby");
+		this.setTextureName("miscarrows:misc_bow");
+		this.setCreativeTab(MiscArrows.tab);
 	}
 	
 	@Override
@@ -123,7 +124,7 @@ public class ItemMiscBow extends ItemBow {
 				continue;
 			if(item.getItem().equals(Items.arrow))
 				types++;
-			if(item.getItem().equals(MiscArrows.arrow)){
+			if(item.getItem().equals(MiscArrows.normalArrow)){
 				ItemMiscArrow arrow = (ItemMiscArrow) item.getItem();
 				
 			}

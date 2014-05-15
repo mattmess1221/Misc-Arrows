@@ -5,6 +5,6 @@
   "description": "Adds different arrow types to Minecraft.",
   "version": "${version}",
   "mcversion": "${mcversion}",
-  "authors": ["killjoy1221"],
+  "authors": ["killjoy1221"]
 }
 ]

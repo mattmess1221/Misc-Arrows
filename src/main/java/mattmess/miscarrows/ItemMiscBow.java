@@ -136,8 +136,12 @@ public class ItemMiscBow extends ItemBow {
 		return EnumAction.bow;
 	}
 	
-	private void selectArrow(ItemStack itemstack){
+	public void selectArrow(ItemStack itemstack){
 		this.selectedArrow = itemstack;
+	}
+	
+	public ItemStack getSelectedArrow(){
+		return selectedArrow;
 	}
 	
 	private ArrayList<ItemStack> getArrowStacks(InventoryPlayer inventory){

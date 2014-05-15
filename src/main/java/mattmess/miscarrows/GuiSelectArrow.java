@@ -2,6 +2,7 @@ package mattmess.miscarrows;
 
 import java.util.List;
 
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.item.ItemStack;
@@ -19,24 +20,35 @@ public class GuiSelectArrow extends GuiScreen {
 	@Override
 	public void drawScreen(int x, int y, float f){
 		super.drawScreen(x, y, f);
+		
+	}
+	
+	@Override
+	public void initGui(){
+		int iconsize = 16;
 		int size = arrows.size();
+		int i = 0;
 		int u = width/2 - size*12/2;
 		int v = height/2;
-		mc.renderEngine.bindTexture(TextureMap.locationItemsTexture);
 		for(ItemStack item : arrows){
-			this.drawTexturedModelRectFromIcon(u, v, item.getIconIndex(), 12, 12);
-			//this.drawCenteredString(fontRendererObj,item.getDisplayName() + " (" + item.stackSize + ")", width/2, pos, 0xffffff);
-			u += 15;
-			if(u>350){
-				u = width/2-size*6;
-				v += 15;
+			this.buttonList.add(new GuiArrowButton(i, u+(20 * i), v, item));
+			i++;
+			if(i>5){
+				i = 0;
+				v += iconsize + 2;
+			}
+		}
+		for(GuiArrowButton button : (List<GuiArrowButton>) buttonList){
+			if(button.getItemStack() == ((ItemMiscBow)bow.getItem()).getSelectedArrow()){
+				button.enabled = false;
 			}
 		}
 	}
 	
 	@Override
-	public void initGui(){
-		
+	public void actionPerformed(GuiButton button){
+		GuiArrowButton arrowbutton = (GuiArrowButton)button;
+		((ItemMiscBow) bow.getItem()).selectArrow(arrowbutton.getItemStack());
 	}
 	
 	@Override

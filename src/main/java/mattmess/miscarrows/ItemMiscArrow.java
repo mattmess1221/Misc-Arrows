@@ -16,6 +16,7 @@ public class ItemMiscArrow extends Item {
 		this.setUnlocalizedName("misc_arrow");
 		this.setTextureName("miscarrows:misc_arrow");
 		this.setCreativeTab(MiscArrows.tab);
+		this.hasSubtypes = true;
 	}
 
 	@Override

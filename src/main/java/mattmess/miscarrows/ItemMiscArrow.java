@@ -68,7 +68,7 @@ public class ItemMiscArrow extends Item {
 				return "explosive";
 			if(this.equals(ITEM))
 				return "item";
-			return "";
+			return "normal";
 		}
 	}
 }

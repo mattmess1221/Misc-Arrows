@@ -124,7 +124,7 @@ public class ItemMiscBow extends ItemBow {
 				continue;
 			if(item.getItem().equals(Items.arrow))
 				types++;
-			if(item.getItem().equals(MiscArrows.normalArrow)){
+			if(item.getItem().equals(MiscArrows.arrow)){
 				ItemMiscArrow arrow = (ItemMiscArrow) item.getItem();
 				
 			}

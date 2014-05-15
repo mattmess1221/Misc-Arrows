@@ -19,43 +19,45 @@ public class MiscArrows {
 		@Override
 		public Item getTabIconItem() {
 			// TODO Auto-generated method stub
-			return normalArrow;
+			return arrow;
 		}
 		
 	};
 	public static ItemMiscBow bow = new ItemMiscBow();
-	public static Item normalArrow = new ItemMiscArrow(ItemMiscArrow.Effect.NORMAL);
-	public static Item fireArrow = new ItemMiscArrow(ItemMiscArrow.Effect.FIRE);
-	public static Item iceArrow = new ItemMiscArrow(ItemMiscArrow.Effect.ICE);
-	public static Item slimeArrow = new ItemMiscArrow(ItemMiscArrow.Effect.SLIME);
-	public static Item potionArrow = new ItemMiscArrow(ItemMiscArrow.Effect.POTION);
-	public static Item teleportArrow = new ItemMiscArrow(ItemMiscArrow.Effect.TELEPORT);
-	public static Item explosiveArrow = new ItemMiscArrow(ItemMiscArrow.Effect.EXPLOSIVE);
-	public static Item itemArrow = new ItemMiscArrow(ItemMiscArrow.Effect.ITEM);
+	public static Item arrow = new ItemMiscArrow(ItemMiscArrow.Effect.NORMAL);
+	public static ItemStack fireArrow = new ItemStack(arrow, 1, 1);
+	public static ItemStack iceArrow = new ItemStack(arrow, 1, 2);
+	public static ItemStack slimeArrow = new ItemStack(arrow, 1, 3);
+	public static ItemStack potionArrow = new ItemStack(arrow, 1, 4);
+	public static ItemStack teleportArrow = new ItemStack(arrow, 1, 5);
+	public static ItemStack explosiveArrow = new ItemStack(arrow, 1, 6);
+	public static ItemStack itemArrow = new ItemStack(arrow, 1, 1);
 	public static Item quiver = new ItemQuiver();
 	
 	@EventHandler
 	public void startup(FMLPreInitializationEvent event){
 		GameRegistry.registerItem(bow, "misc_bow");
-		GameRegistry.registerItem(normalArrow, "misc_arrow");
-		GameRegistry.registerItem(fireArrow, "misc_arrow_fire");
-		GameRegistry.registerItem(iceArrow, "misc_arrow_ice");
-		GameRegistry.registerItem(slimeArrow, "misc_arrow_slime");
-		GameRegistry.registerItem(potionArrow, "misc_arrow_potion");
-		GameRegistry.registerItem(teleportArrow, "misc_arrow_teleport");
-		GameRegistry.registerItem(explosiveArrow, "misc_arrow_explosive");
-		GameRegistry.registerItem(itemArrow, "misc_arrow_item");
+		GameRegistry.registerItem(arrow, "misc_arrow");
 		GameRegistry.registerItem(quiver, "quiver");
+		
+		GameRegistry.registerCustomItemStack("misc_arrow_fire", fireArrow);
+		GameRegistry.registerCustomItemStack("misc_arrow_ice", iceArrow);
+		GameRegistry.registerCustomItemStack("misc_arrow_slime", slimeArrow);
+		GameRegistry.registerCustomItemStack("misc_arrow_potion", potionArrow);
+		GameRegistry.registerCustomItemStack("misc_arrow_teleport", teleportArrow);
+		GameRegistry.registerCustomItemStack("misc_arrow_explosive", explosiveArrow);
+		GameRegistry.registerCustomItemStack("misc_arrow_item", itemArrow);
+		
 		GameRegistry.addRecipe(new ItemStack(this.bow, 1), new Object[]{"ggg", "gDg", "ggg", 'g', Items.gold_nugget, 'D', Items.bow});
 		GameRegistry.addRecipe(new ItemStack(quiver, 1), new Object[]{"lll", "l l", "lll", 'l', Items.leather});
 		
-		GameRegistry.addShapelessRecipe(new ItemStack(explosiveArrow), Items.arrow, Items.gunpowder);
-		GameRegistry.addShapelessRecipe(new ItemStack(fireArrow), Items.arrow, Items.magma_cream);
-		GameRegistry.addShapelessRecipe(new ItemStack(iceArrow), Items.arrow, Items.snowball);
-		GameRegistry.addShapelessRecipe(new ItemStack(slimeArrow), Items.arrow, Items.slime_ball);
-		GameRegistry.addShapelessRecipe(new ItemStack(teleportArrow), Items.arrow, Items.ender_pearl);
-		GameRegistry.addShapelessRecipe(new ItemStack(potionArrow), Items.arrow, Items.potionitem);
-		GameRegistry.addShapelessRecipe(new ItemStack(itemArrow), Items.arrow, Items.leather);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 1), Items.arrow, Items.magma_cream);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 2), Items.arrow, Items.snowball);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 3), Items.arrow, Items.slime_ball);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 4), Items.arrow, Items.ender_pearl);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 5), Items.arrow, Items.potionitem);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 6), Items.arrow, Items.gunpowder);
+		GameRegistry.addShapelessRecipe(new ItemStack(arrow, 1, 7), Items.arrow, Items.leather);
 		
 	}
 }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
 import net.minecraft.item.Item;
@@ -30,6 +30,11 @@ public class ItemMiscBow extends ItemBow {
 	
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int i){
+		if(player.isSneaking() && i == 1){
+			
+			return;
+		}
+		
 		int j = this.getMaxItemUseDuration(stack) - i;
 
         ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
@@ -88,7 +93,9 @@ public class ItemMiscBow extends ItemBow {
             if(flag){
             	entityarrow.canBePickedUp = 2;
             }else{
-            	player.inventory.consumeInventoryItem(Items.arrow);
+            	selectedArrow.stackSize--;
+        		if(selectedArrow.stackSize == 0)
+        			selectedArrow = null;
             }
 
             if (!world.isRemote)
@@ -119,20 +126,27 @@ public class ItemMiscBow extends ItemBow {
 		return EnumAction.bow;
 	}
 	
+	private void selectArrow(ItemStack itemstack){
+		this.selectedArrow = itemstack;
+	}
 	
-	private int getArrowTypes(EntityPlayer player){
-		int types = 0;
+	private ArrayList<ItemStack> getArrowStacks(InventoryPlayer inventory){
+		ArrayList<ItemStack> types = Lists.newArrayList();
 		ArrayList<Item> items = Lists.newArrayList();
-		for(ItemStack item : player.inventory.mainInventory){
-			if(items.contains(item.getItem()))
-				continue;
-			if(item.getItem().equals(Items.arrow))
-				types++;
-			if(item.getItem().equals(MiscArrows.arrow)){
-				ItemMiscArrow arrow = (ItemMiscArrow) item.getItem();
-				
+		for(ItemStack item : inventory.mainInventory){
+			if(item.getItem().equals(MiscArrows.arrow))
+				types.add(item);
+			if(item.getItem().equals(MiscArrows.quiver)){
+				ItemQuiver quiver = (ItemQuiver) item.getItem();
+				InventoryQuiver quivInv = quiver.getInventory(item);
+				for(ItemStack itemstack : quivInv.inventory){
+					if(itemstack != null)
+						types.add(itemstack);
+				}
 			}
 		}
+		
+		
 		return types;
 	}
 }

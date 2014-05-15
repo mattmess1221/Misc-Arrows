@@ -1,128 +1,107 @@
 package mattmess.miscarrows;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 
-public class ContainerQuiver extends Container implements IInventory {
+public class ContainerQuiver extends Container {
 
-	private boolean inventoryChanged;
-	
-	public static void openContainer(EntityPlayer entity, ItemStack itemStack){
-		ContainerQuiver container;
-	}
-	
-	@Override
-	public int getSizeInventory() {
-		// TODO Auto-generated method stub
-		return 5;
-	}
+	public InventoryQuiver inventory;
+	private static final int INV_START = InventoryQuiver.INV_SIZE,
+			INV_END = INV_START + 26, HOTBAR_START = INV_END + 1,
+			HOTBAR_END = HOTBAR_START + 8;
 
-	@Override
-	public ItemStack getStackInSlot(int var1) {
-		// TODO Auto-generated method stub
-		return (ItemStack) inventoryItemStacks.get(var1);
-	}
+	public ContainerQuiver(EntityPlayer player,
+			InventoryPlayer inventoryPlayer, IInventory quiver) {
+		this.inventory = (InventoryQuiver) quiver;
+		int i;
+		for (i = 0; i < 5; i++) {
+			addSlotToContainer(new Slot(this.inventory, i, 80 + (16 * i), 40));
+		}
+		// Player Inventory
+		for (i = 0; i < 3; ++i) {
+			for (int j = 0; j < 9; ++j) {
+				this.addSlotToContainer(new Slot(inventoryPlayer,
+						j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
+			}
+		}
+		for (i = 0; i < 9; ++i) {
+			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18,
+					142));
+		}
+		// End player inventory
 
-	@Override
-	public ItemStack decrStackSize(int var1, int var2) {
-		this.markDirty();
-		if(inventoryItemStacks.get(var1) == null)
-			return null;
-		ItemStack itemstack;
-		if (((ItemStack)this.inventoryItemStacks.get(var1)).stackSize <= var2)
-        {
-            itemstack = (ItemStack) this.inventoryItemStacks.get(var1);
-            this.inventoryItemStacks.set(var1, null);
-            return itemstack;
-        }
-        else
-        {
-            itemstack = ((ItemStack) this.inventoryItemStacks.get(var1)).splitStack(var2);
-
-            if (((ItemStack)this.inventoryItemStacks.get(var1)).stackSize == 0)
-            {
-                this.inventoryItemStacks.set(var1, null);
-            }
-
-            return itemstack;
-        }
 	}
 
 	@Override
-	public ItemStack getStackInSlotOnClosing(int var1) {
-		// TODO Auto-generated method stub
-		if(inventoryItemStacks.get(var1) == null)
-			return null;
-		ItemStack itemstack = (ItemStack) inventoryItemStacks.get(var1);
-		inventoryItemStacks.set(var1, null);
+	public boolean canInteractWith(EntityPlayer player) {
+		return inventory.isUseableByPlayer(player);
+	}
+
+	@Override
+	public ItemStack transferStackInSlot(EntityPlayer par1EntityPlayer, int par2) {
+		ItemStack itemstack = null;
+		Slot slot = (Slot) this.inventorySlots.get(par2);
+
+		if (slot != null && slot.getHasStack()) {
+			ItemStack itemstack1 = slot.getStack();
+			itemstack = itemstack1.copy();
+
+			// If item is in our custom Inventory or armor slot
+			if (par2 < INV_START) {
+				// try to place in player inventory / action bar
+				if (!this.mergeItemStack(itemstack1, INV_START, HOTBAR_END + 1,
+						true)) {
+					return null;
+				}
+
+				slot.onSlotChange(itemstack1, itemstack);
+			}
+			// Item is in inventory / hotbar, try to place in custom inventory
+			// or armor slots
+			else {
+				
+				// item is in player's inventory, but not in action bar
+				if (par2 >= INV_START && par2 < HOTBAR_START) {
+					// place in action bar
+					if (!this.mergeItemStack(itemstack1, HOTBAR_START,
+							HOTBAR_END + 1, false)) {
+						return null;
+					}
+				}
+				// item in action bar - place in player inventory
+				else if (par2 >= HOTBAR_START && par2 < HOTBAR_END + 1) {
+					if (!this.mergeItemStack(itemstack1, INV_START,
+							INV_END + 1, false)) {
+						return null;
+					}
+				}
+			}
+
+			if (itemstack1.stackSize == 0) {
+				slot.putStack((ItemStack) null);
+			} else {
+				slot.onSlotChanged();
+			}
+
+			if (itemstack1.stackSize == itemstack.stackSize) {
+				return null;
+			}
+
+			slot.onPickupFromSlot(par1EntityPlayer, itemstack1);
+		}
+
 		return itemstack;
 	}
-
+	
 	@Override
-	public void setInventorySlotContents(int var1, ItemStack var2) {
-		inventoryItemStacks.set(var1, var2);
-        if (var2 != null && var2.stackSize > this.getInventoryStackLimit())
-        {
-            var2.stackSize = this.getInventoryStackLimit();
-        }
-	}
-
-	@Override
-	public String getInventoryName() {
-		// TODO Auto-generated method stub
-		return "Quiver";
-	}
-
-	@Override
-	public boolean hasCustomInventoryName() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public int getInventoryStackLimit() {
-		// TODO Auto-generated method stub
-		return 64;
-	}
-
-	@Override
-	public void markDirty() {
-		this.inventoryChanged = true;
-	}
-
-	@Override
-	public boolean isUseableByPlayer(EntityPlayer var1) {
-		return var1.getItemInUse().getItem() instanceof ItemQuiver;
-	}
-
-	@Override
-	public void openInventory() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void closeInventory() {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public boolean isItemValidForSlot(int var1, ItemStack var2) {
-		if(var1 > 5)
-			return true;
-		if(var2.getItem() instanceof ItemMiscArrow)
-			return true;
-		return false;
-	}
-
-	@Override
-	public boolean canInteractWith(EntityPlayer var1) {
-		// TODO Auto-generated method stub
-		return true;
+	public ItemStack slotClick(int slot, int button, int flag, EntityPlayer player){
+		if(slot >= 0 && getSlot(slot) != null && getSlot(slot).getStack() == player.getHeldItem())
+			return null;
+		return super.slotClick(slot, button, flag, player);
 	}
 
 }

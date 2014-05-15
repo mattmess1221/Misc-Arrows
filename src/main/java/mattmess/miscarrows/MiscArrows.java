@@ -1,19 +1,26 @@
 package mattmess.miscarrows;
 
-import net.minecraft.block.material.MapColor;
 import net.minecraft.creativetab.CreativeTabs;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.launchwrapper.Launch;
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
+import cpw.mods.fml.common.Mod.Instance;
+import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
 @Mod(modid = "miscarrows", name= "Misc Arrows", version = "1.0")
 public class MiscArrows {
+	
+	public static final int GUI_QUIVER_INV = 0;
+
+	@Instance("miscarrows")
+	public static MiscArrows instance;
+	@SidedProxy(clientSide = "mattmess.miscarrows.ClientProxy", serverSide = "mattmess.miscarrows.CommonProxy")
+	public static CommonProxy proxy;
 	public static CreativeTabs tab = new CreativeTabs("miscarrows"){
 
 		@Override
@@ -32,10 +39,12 @@ public class MiscArrows {
 	public static ItemStack teleportArrow = new ItemStack(arrow, 1, 5);
 	public static ItemStack explosiveArrow = new ItemStack(arrow, 1, 6);
 	public static ItemStack itemArrow = new ItemStack(arrow, 1, 7);
-	public static Item quiver = new ItemQuiver();
+	public static ItemQuiver quiver = new ItemQuiver();
 	
 	@EventHandler
 	public void startup(FMLPreInitializationEvent event){
+		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
+		
 		GameRegistry.registerItem(bow, "misc_bow");
 		GameRegistry.registerItem(arrow, "misc_arrow");
 		GameRegistry.registerItem(quiver, "quiver");

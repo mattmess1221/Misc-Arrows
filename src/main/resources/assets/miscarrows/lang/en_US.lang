@@ -1,0 +1,9 @@
+item.misc_bow.name=Misc Bow
+item.misc_arrow.explosive.name=Explosive Arrow
+item.misc_arrow.fire.name=Fire Arrow
+item.misc_arrow.ice.name=Ice Arrow
+item.misc_arrow.item.name=Item Transport Arrow
+item.misc_arrow.potion.name=Potion Arrow
+item.misc_arrow.teleport.name=Teleport Arrow
+item.misc_arrow.slime.name=Sticky Arrow
+item.quiver.name=Quiver

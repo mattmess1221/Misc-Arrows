@@ -2,6 +2,7 @@ package mattmess.miscarrows;
 
 import java.util.ArrayList;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -30,10 +31,7 @@ public class ItemMiscBow extends ItemBow {
 	
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int i){
-		if(player.isSneaking() && i == 1){
-			
-			return;
-		}
+
 		
 		int j = this.getMaxItemUseDuration(stack) - i;
 
@@ -105,8 +103,20 @@ public class ItemMiscBow extends ItemBow {
         }
 	}
 	
+	private void selectArrow(ItemStack itemstack, EntityPlayer player) {
+		ArrayList<ItemStack> arrows = getArrowStacks(player.inventory);
+		if(arrows.size() == 0)
+			return;
+		Minecraft.getMinecraft().displayGuiScreen(new GuiSelectArrow(itemstack, arrows));
+		
+	}
+
 	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
     {
+		if(par3EntityPlayer.isSneaking()){
+			selectArrow(par1ItemStack, par3EntityPlayer);
+			return par1ItemStack;
+		}
         ArrowNockEvent event = new ArrowNockEvent(par3EntityPlayer, par1ItemStack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())
@@ -134,6 +144,7 @@ public class ItemMiscBow extends ItemBow {
 		ArrayList<ItemStack> types = Lists.newArrayList();
 		ArrayList<Item> items = Lists.newArrayList();
 		for(ItemStack item : inventory.mainInventory){
+			if(item == null) continue;
 			if(item.getItem().equals(MiscArrows.arrow))
 				types.add(item);
 			if(item.getItem().equals(MiscArrows.quiver)){

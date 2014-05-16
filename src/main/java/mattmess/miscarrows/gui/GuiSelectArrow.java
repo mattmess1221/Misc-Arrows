@@ -21,6 +21,20 @@ public class GuiSelectArrow extends GuiScreen {
 	@Override
 	public void drawScreen(int x, int y, float f){
 		super.drawScreen(x, y, f);
+		GuiArrowButton button = (GuiArrowButton) this.forButton(x, y);
+		if(button != null){
+			this.drawCreativeTabHoveringText(button.getItemStack().getDisplayName(), x, y);
+		}
+		
+	}
+	
+	public GuiButton forButton(int mouseX, int mouseY){
+		for(GuiButton button : (List<GuiButton>)buttonList){
+			if(mouseX > button.xPosition && mouseX < button.xPosition + 16 && mouseY > button.yPosition && mouseY <= button.yPosition + 16){
+				return button;
+			}
+		}
+		return null;
 		
 	}
 	

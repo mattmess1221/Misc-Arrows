@@ -3,6 +3,7 @@ package mattmess.miscarrows;
 import net.minecraft.entity.IProjectile;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
@@ -19,18 +20,24 @@ public class EntityMiscArrow extends EntityArrow {
 		this.shooter = player;
 		this.arrow = arrow;
 		this.type = Type.valueOf(arrow.getItemDamage());
-		System.out.println(type.toString());
+		if(type.equals(Type.FIRE))
+			this.setFire(100);
 	}
 	
 	@Override
 	public void onUpdate(){
+		super.onUpdate();
 		if(this.posX == this.prevPosX && this.posY == this.prevPosY && this.posZ == this.prevPosZ){
 			if(type.equals(Type.EXPLOSIVE)){
 				world.createExplosion(this, this.posX, this.posY, this.posZ, 2F, true);
 				this.setDead();
+			} else if (type.equals(Type.FIRE)){
+				world.setBlock((int)posX, (int)posY, (int)posZ, Blocks.fire);
+			} else if (type.equals(Type.TELEPORT)){
+				shooter.setPosition(posX, posY, posZ);
+				this.type = Type.NONE;
 			}
 		}
-		super.onUpdate();
 	}
 
 

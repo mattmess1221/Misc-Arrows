@@ -55,7 +55,7 @@ public class GuiSelectArrow extends GuiScreen {
 			}
 		}
 		for(GuiArrowButton button : (List<GuiArrowButton>) buttonList){
-			if(button.getItemStack() == ((ItemMiscBow)bow.getItem()).getSelectedArrow()){
+			if(button.getItemStack().getItemDamage() != ((ItemMiscBow)bow.getItem()).getSelectedArrow(bow)){
 				button.enabled = false;
 			}
 		}
@@ -64,7 +64,7 @@ public class GuiSelectArrow extends GuiScreen {
 	@Override
 	public void actionPerformed(GuiButton button){
 		GuiArrowButton arrowbutton = (GuiArrowButton)button;
-		((ItemMiscBow) bow.getItem()).selectArrow(arrowbutton.getItemStack());
+		((ItemMiscBow) bow.getItem()).selectArrow(bow, arrowbutton.getItemStack());
 		for(GuiButton butt : (List<GuiButton>)buttonList){
 			butt.enabled = true;
 		}

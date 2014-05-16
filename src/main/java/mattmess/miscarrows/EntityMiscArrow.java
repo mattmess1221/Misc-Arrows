@@ -4,6 +4,8 @@ import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -16,31 +18,34 @@ public class EntityMiscArrow extends EntityArrow {
 
 	private World world;
 	private EntityPlayer shooter;
-	private ItemStack arrow;
 	private Type type;
 	
-	public EntityMiscArrow(World world, EntityPlayer player, float f, ItemStack arrow) {
+	public EntityMiscArrow(World world, EntityPlayer player, float f, int i) {
 		super(world, player, f);
 		MinecraftForge.EVENT_BUS.register(this);
 		this.world = world;
 		this.shooter = player;
-		this.arrow = arrow;
-		this.type = Type.valueOf(arrow.getItemDamage());
+		this.type = Type.valueOf(i);
 		if(type.equals(Type.FIRE))
 			this.setFire(100);
+	}
+	public EntityMiscArrow(World world, EntityPlayer player, float f, int arrow, Container inventory){
+		this(world, player, f, arrow);
 	}
 	
 	@Override
 	public void onUpdate(){
 		super.onUpdate();
+		if (type.equals(Type.FIRE)){
+			setBlockOnFire(posX, posY, posZ);
+		}
 		if(this.posX == this.prevPosX && this.posY == this.prevPosY && this.posZ == this.prevPosZ){
 			if(type.equals(Type.EXPLOSIVE)){
 				explode();
-			} else if (type.equals(Type.FIRE)){
-				setBlockOnFire(posX, posY, posZ);
 			} else if (type.equals(Type.TELEPORT)){
 				teleport(posX, posY, posZ);
 			}
+			this.type = Type.NONE;
 		}
 	}
 	
@@ -54,7 +59,7 @@ public class EntityMiscArrow extends EntityArrow {
 			return;
 		int xd = MathHelper.floor_double(x), yd = MathHelper.floor_double(y), zd = MathHelper.floor_double(z);
 		world.setBlock(xd, yd, zd, Blocks.fire);
-		this.type = Type.NONE;
+		//this.type = Type.NONE;
 	}
 	
 	@SubscribeEvent

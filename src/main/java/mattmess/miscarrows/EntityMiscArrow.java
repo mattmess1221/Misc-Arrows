@@ -1,12 +1,13 @@
 package mattmess.miscarrows;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.Container;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
@@ -28,6 +29,8 @@ public class EntityMiscArrow extends EntityArrow {
 		this.type = Type.valueOf(i);
 		if(type.equals(Type.FIRE))
 			this.setFire(100);
+		System.out.println(i);
+		System.out.println(type);
 	}
 	public EntityMiscArrow(World world, EntityPlayer player, float f, int arrow, Container inventory){
 		this(world, player, f, arrow);
@@ -38,6 +41,8 @@ public class EntityMiscArrow extends EntityArrow {
 		super.onUpdate();
 		if (type.equals(Type.FIRE)){
 			setBlockOnFire(posX, posY, posZ);
+		} else if (type.equals(Type.ICE)){
+			freeze();
 		}
 		if(this.posX == this.prevPosX && this.posY == this.prevPosY && this.posZ == this.prevPosZ){
 			if(type.equals(Type.EXPLOSIVE)){
@@ -47,6 +52,19 @@ public class EntityMiscArrow extends EntityArrow {
 			}
 			this.type = Type.NONE;
 		}
+	}
+	private void freeze(){
+		int x = MathHelper.floor_double(posX), y = MathHelper.floor_double(posY), z = MathHelper.floor_double(posZ);
+		Block block = world.getBlock(x, y, z);
+		Block block1 = world.getBlock(x, y-1, z);
+		if(block.getMaterial().equals(Material.air) && Blocks.snow_layer.canPlaceBlockAt(world, x, y, z)){
+			world.setBlock(x, y, z, Blocks.snow_layer);
+		} else if (block.getMaterial().equals(Material.water))
+			world.setBlock(x, y, z, Blocks.ice);
+	}
+	private void freeze(EntityLivingBase entity){
+		if(entity != null)
+			entity.addPotionEffect(new PotionEffect(2,500, 5000));
 	}
 	
 	private void explode(){
@@ -75,6 +93,8 @@ public class EntityMiscArrow extends EntityArrow {
 			event.setCanceled(true);
 		else if(this.type.equals(Type.TELEPORT))
 			teleport(event.entity.posX, event.entity.posY, event.entity.posZ);
+		else if (this.type.equals(Type.ICE))
+			freeze(event.entityLiving);
 			
 	}
 
@@ -87,7 +107,7 @@ public class EntityMiscArrow extends EntityArrow {
 	}
 
 
-	private static enum Type{
+	public static enum Type{
 		EXPLOSIVE, FIRE, ICE, ITEM, POTION, TELEPORT, STICKY, NONE;
 		
 		public static Type valueOf(int id){

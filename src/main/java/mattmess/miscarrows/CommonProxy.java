@@ -20,7 +20,7 @@ public class CommonProxy implements IGuiHandler{
 				@Override
 				public boolean canInteractWith(EntityPlayer var1) {
 					// TODO Auto-generated method stub
-					return false;
+					return true;
 				}
 			
 		};

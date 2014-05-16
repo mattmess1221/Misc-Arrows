@@ -1,6 +1,7 @@
 package mattmess.miscarrows.item;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import mattmess.miscarrows.EntityMiscArrow;
 import mattmess.miscarrows.InventoryQuiver;
@@ -22,13 +23,26 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 import com.google.common.collect.Lists;
 
 public class ItemMiscBow extends ItemBow {
-	private ItemStack selectedArrow;
 	private int power;
 	public ItemMiscBow(){
 		super();
 		this.setUnlocalizedName("misc_bow");
 		this.setTextureName("miscarrows:misc_bow");
 		this.setCreativeTab(MiscArrows.tab);
+	}
+	
+	@Override
+	public void onCreated(ItemStack itemstack, World world, EntityPlayer player){
+		itemstack.stackTagCompound = new NBTTagCompound();
+		itemstack.stackTagCompound.setInteger("arrow", 0);
+	}
+	
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool){
+		if(itemstack.stackTagCompound == null)
+			itemstack.stackTagCompound = new NBTTagCompound();
+		int id = itemstack.stackTagCompound.getInteger("arrow");
+		list.add("Selected Arrow: " + EntityMiscArrow.Type.valueOf(id).name());
 	}
 	
 	@Override
@@ -47,7 +61,7 @@ public class ItemMiscBow extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || (player.inventory.hasItemStack(selectedArrow) && stack.getTagCompound().getInteger("arrow") != 0))
+        if (flag || (player.inventory.hasItem(MiscArrows.arrow) && stack.stackTagCompound.getInteger("arrow") != 0))
         {
             float f = (float)j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -62,7 +76,9 @@ public class ItemMiscBow extends ItemBow {
                 f = 1.0F;
             }
 
-            EntityMiscArrow entityarrow = new EntityMiscArrow(world, player, f * 2.0F, stack.getTagCompound().getInteger("arrow"));
+            if (!world.isRemote)
+            {
+            EntityMiscArrow entityarrow = new EntityMiscArrow(world, player, f * 2.0F, stack.stackTagCompound.getInteger("arrow"));
 
             if (f == 1.0F)
             {
@@ -93,11 +109,9 @@ public class ItemMiscBow extends ItemBow {
             if(flag){
             	entityarrow.canBePickedUp = 2;
             }else{
-            	selectedArrow.stackSize--;
+            	//player.inventory.
             }
 
-            if (!world.isRemote)
-            {
                 world.spawnEntityInWorld(entityarrow);
             }
         }
@@ -116,7 +130,7 @@ public class ItemMiscBow extends ItemBow {
     {
 		if(itemstack.stackTagCompound == null)
 			itemstack.stackTagCompound = new NBTTagCompound();
-		if(selectedArrow == null || !player.inventory.hasItemStack(this.selectedArrow) || (player.capabilities.isCreativeMode && selectedArrow != null)){
+		if(itemstack.stackTagCompound.getInteger("arrow") == 0 || (player.capabilities.isCreativeMode && itemstack.stackTagCompound.getInteger("arrow") != 0)){
 			selectFirstArrow(player.inventory);
 		}
 		if(player.isSneaking() && world.isRemote){
@@ -130,9 +144,9 @@ public class ItemMiscBow extends ItemBow {
             return event.result;
         }
 
-        if(selectedArrow == null)
+        if(itemstack.stackTagCompound.getInteger("arrow") == 0)
         	return itemstack;
-        if (player.capabilities.isCreativeMode || player.inventory.hasItemStack(selectedArrow))
+        if (player.capabilities.isCreativeMode || player.inventory.hasItem(MiscArrows.arrow))
         {
             player.setItemInUse(itemstack, this.getMaxItemUseDuration(itemstack));
         }
@@ -141,6 +155,8 @@ public class ItemMiscBow extends ItemBow {
     }
 	
 	private void selectFirstArrow(InventoryPlayer inventory) {
+		if(inventory.player.capabilities.isCreativeMode)
+			return;
 		for(ItemStack stack : inventory.mainInventory){
 			if(stack == null || stack.getItem() == null)
 				continue;
@@ -156,22 +172,21 @@ public class ItemMiscBow extends ItemBow {
 		return EnumAction.bow;
 	}
 	public void selectArrow(ItemStack bow, ItemStack arrow){
-		NBTTagCompound tag = bow.getTagCompound();
+		NBTTagCompound tag = bow.stackTagCompound;
 		if(tag == null)
 			tag = new NBTTagCompound();
-		if(arrow == null)
+		if(arrow == null){
 			tag.removeTag("arrow");
-		else
+		}else{
 			tag.setInteger("arrow", arrow.getItemDamage());
-		bow.writeToNBT(tag);
-		this.selectedArrow = arrow;
+		}
 		System.out.println(bow.getTagCompound());
 	}
 	
 	public int getSelectedArrow(ItemStack bow){
-		if(bow.getTagCompound() == null)
-			bow.setTagCompound(new NBTTagCompound());
-		return bow.getTagCompound().getInteger("arrow");
+		if(bow.stackTagCompound == null)
+			bow.stackTagCompound = new NBTTagCompound();
+		return bow.stackTagCompound.getInteger("arrow");
 	}
 	
 	public static ArrayList<ItemStack> getArrowStacks(InventoryPlayer inventory){

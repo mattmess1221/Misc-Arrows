@@ -6,7 +6,7 @@ import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class EntityMiscArrow extends EntityArrow implements IProjectile{
+public class EntityMiscArrow extends EntityArrow {
 
 	private World world;
 	private EntityPlayer shooter;
@@ -20,6 +20,17 @@ public class EntityMiscArrow extends EntityArrow implements IProjectile{
 		this.arrow = arrow;
 		this.type = Type.valueOf(arrow.getItemDamage());
 		System.out.println(type.toString());
+	}
+	
+	@Override
+	public void onUpdate(){
+		if(this.posX == this.prevPosX && this.posY == this.prevPosY && this.posZ == this.prevPosZ){
+			if(type.equals(Type.EXPLOSIVE)){
+				world.createExplosion(this, this.posX, this.posY, this.posZ, 2F, true);
+				this.setDead();
+			}
+		}
+		super.onUpdate();
 	}
 
 

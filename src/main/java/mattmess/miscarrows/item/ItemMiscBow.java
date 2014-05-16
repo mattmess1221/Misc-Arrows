@@ -13,7 +13,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -22,6 +21,9 @@ import net.minecraftforge.event.entity.player.ArrowLooseEvent;
 import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 import com.google.common.collect.Lists;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ItemMiscBow extends ItemBow {
 	private ItemStack selectedArrow;
@@ -107,21 +109,23 @@ public class ItemMiscBow extends ItemBow {
             }
         }
 	}
-	
+
 	private void selectArrow(ItemStack itemstack, EntityPlayer player) {
 		ArrayList<ItemStack> arrows = getArrowStacks(player.inventory);
 		if(arrows.size() == 0)
 			return;
-		Minecraft.getMinecraft().displayGuiScreen(new GuiSelectArrow(itemstack, arrows));
+		if(player.worldObj.isRemote)
+			player.openGui(MiscArrows.instance, 0, player.worldObj, 0, 0, 0);
+		//Minecraft.getMinecraft().displayGuiScreen(new GuiSelectArrow(itemstack, arrows));
 		
 	}
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		if(selectedArrow == null || !player.inventory.hasItemStack(this.selectedArrow)){
+		if(selectedArrow == null || !player.inventory.hasItemStack(this.selectedArrow) || (player.capabilities.isCreativeMode && selectedArrow != null)){
 			selectFirstArrow(player.inventory);
 		}
-		if(player.isSneaking()){
+		if(player.isSneaking() && world.isRemote){
 			selectArrow(itemstack, player);
 			return itemstack;
 		}
@@ -146,19 +150,19 @@ public class ItemMiscBow extends ItemBow {
 		for(ItemStack stack : inventory.mainInventory){
 			if(stack == null || stack.getItem() == null)
 				continue;
-			if(stack.getItem().equals(MiscArrows.arrow)){
+			if(stack.getItem().equals(MiscArrows.arrow) || stack.getItem().equals(Items.arrow)){
 				selectArrow(stack);
 				return;
 			}
 		}
-		//selectArrow(null);
+		if(!inventory.player.capabilities.isCreativeMode)
+			selectArrow(null);
 	}
 
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack){
 		return EnumAction.bow;
 	}
-	
 	public void selectArrow(ItemStack itemstack){
 		this.selectedArrow = itemstack;
 		System.out.println(selectedArrow);
@@ -168,11 +172,13 @@ public class ItemMiscBow extends ItemBow {
 		return selectedArrow;
 	}
 	
-	private ArrayList<ItemStack> getArrowStacks(InventoryPlayer inventory){
+	public static ArrayList<ItemStack> getArrowStacks(InventoryPlayer inventory){
 		ArrayList<ItemStack> types = Lists.newArrayList();
 		for(ItemStack item : inventory.mainInventory){
 			if(item == null) continue;
 			if(item.getItem().equals(MiscArrows.arrow))
+				types.add(item);
+			if(item.getItem().equals(Items.arrow))
 				types.add(item);
 			if(item.getItem().equals(MiscArrows.quiver)){
 				ItemQuiver quiver = (ItemQuiver) item.getItem();

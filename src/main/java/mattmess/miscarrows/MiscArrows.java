@@ -1,5 +1,8 @@
 package mattmess.miscarrows;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import mattmess.miscarrows.item.ItemMiscArrow;
 import mattmess.miscarrows.item.ItemMiscBow;
 import mattmess.miscarrows.item.ItemQuiver;
@@ -18,7 +21,7 @@ import cpw.mods.fml.common.registry.GameRegistry;
 @Mod(modid = "miscarrows", name= "Misc Arrows", version = "1.0")
 public class MiscArrows {
 	
-	public static final int GUI_QUIVER_INV = 0;
+	public static final Logger logger = LogManager.getLogger("MiscArrows");
 
 	@Instance("miscarrows")
 	public static MiscArrows instance;
@@ -46,7 +49,7 @@ public class MiscArrows {
 	
 	@EventHandler
 	public void startup(FMLPreInitializationEvent event){
-		
+		logger.info("Setting up Misc Arrows.");
 		GameRegistry.registerItem(bow, "misc_bow");
 		GameRegistry.registerItem(arrow, "misc_arrow");
 		GameRegistry.registerItem(quiver, "quiver");
@@ -70,5 +73,6 @@ public class MiscArrows {
 		GameRegistry.addShapelessRecipe(explosiveArrow, Items.arrow, Items.gunpowder);
 		GameRegistry.addShapelessRecipe(itemArrow, Items.arrow, Items.leather);
 		
+		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
 	}
 }

@@ -1,11 +1,16 @@
 package mattmess.miscarrows;
 
-import net.minecraft.entity.IProjectile;
+import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.DamageSource;
+import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 
 public class EntityMiscArrow extends EntityArrow {
 
@@ -16,6 +21,7 @@ public class EntityMiscArrow extends EntityArrow {
 	
 	public EntityMiscArrow(World world, EntityPlayer player, float f, ItemStack arrow) {
 		super(world, player, f);
+		MinecraftForge.EVENT_BUS.register(this);
 		this.world = world;
 		this.shooter = player;
 		this.arrow = arrow;
@@ -29,15 +35,50 @@ public class EntityMiscArrow extends EntityArrow {
 		super.onUpdate();
 		if(this.posX == this.prevPosX && this.posY == this.prevPosY && this.posZ == this.prevPosZ){
 			if(type.equals(Type.EXPLOSIVE)){
-				world.createExplosion(this, this.posX, this.posY, this.posZ, 2F, true);
-				this.setDead();
+				explode();
 			} else if (type.equals(Type.FIRE)){
-				world.setBlock((int)posX, (int)posY, (int)posZ, Blocks.fire);
+				setBlockOnFire(posX, posY, posZ);
 			} else if (type.equals(Type.TELEPORT)){
-				shooter.setPosition(posX, posY, posZ);
-				this.type = Type.NONE;
+				teleport(posX, posY, posZ);
 			}
 		}
+	}
+	
+	private void explode(){
+		world.createExplosion(this, this.posX, this.posY, this.posZ, 2F, true);
+		this.setDead();
+	}
+	
+	private void setBlockOnFire(double x, double y, double z){
+		if(world.isRemote)
+			return;
+		int xd = MathHelper.floor_double(x), yd = MathHelper.floor_double(y), zd = MathHelper.floor_double(z);
+		world.setBlock(xd, yd, zd, Blocks.fire);
+		this.type = Type.NONE;
+	}
+	
+	@SubscribeEvent
+	public void onArrowHit(LivingAttackEvent event){
+		if(event.source == null || event.source.getSourceOfDamage() != this)
+			return;
+		
+		if(this.type.equals(Type.EXPLOSIVE))
+			explode();
+		else if(this.type.equals(Type.FIRE))
+			setBlockOnFire(event.entity.posX, event.entity.posY, event.entity.posZ);
+		else if(this.type.equals(Type.STICKY))
+			event.setCanceled(true);
+		else if(this.type.equals(Type.TELEPORT))
+			teleport(event.entity.posX, event.entity.posY, event.entity.posZ);
+			
+	}
+
+
+	private void teleport(double posX, double posY, double posZ) {
+		shooter.setPositionAndUpdate(posX, posY, posZ);
+		shooter.fallDistance = 0.0F;
+		shooter.attackEntityFrom(DamageSource.fall, 5.0F);
+		this.type = Type.NONE;
 	}
 
 

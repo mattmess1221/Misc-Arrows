@@ -4,13 +4,14 @@ import mattmess.miscarrows.ContainerQuiver;
 import mattmess.miscarrows.InventoryQuiver;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
+@SideOnly(Side.CLIENT)
 public class GuiQuiver extends GuiContainer {
 
 	private float xSize_lo;

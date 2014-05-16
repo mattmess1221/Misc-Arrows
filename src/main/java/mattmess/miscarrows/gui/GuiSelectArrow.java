@@ -50,6 +50,11 @@ public class GuiSelectArrow extends GuiScreen {
 	public void actionPerformed(GuiButton button){
 		GuiArrowButton arrowbutton = (GuiArrowButton)button;
 		((ItemMiscBow) bow.getItem()).selectArrow(arrowbutton.getItemStack());
+		for(GuiButton butt : (List<GuiButton>)buttonList){
+			butt.enabled = true;
+		}
+		button.enabled = false;
+		mc.displayGuiScreen(null);
 	}
 	
 	@Override

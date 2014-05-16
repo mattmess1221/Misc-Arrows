@@ -121,6 +121,9 @@ public class ItemMiscBow extends ItemBow {
 			selectArrow(par1ItemStack, par3EntityPlayer);
 			return par1ItemStack;
 		}
+		if(selectedArrow == null || !par3EntityPlayer.inventory.hasItemStack(this.selectedArrow)){
+			selectFirstArrow(par3EntityPlayer.inventory);
+		}
         ArrowNockEvent event = new ArrowNockEvent(par3EntityPlayer, par1ItemStack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())
@@ -135,6 +138,17 @@ public class ItemMiscBow extends ItemBow {
 
         return par1ItemStack;
     }
+	private void selectFirstArrow(InventoryPlayer inventory) {
+		for(ItemStack stack : inventory.mainInventory){
+			if(stack == null)
+				continue;
+			if(stack.getItem().equals(MiscArrows.arrow)){
+				selectArrow(stack, inventory.player);
+				return;
+			}
+		}
+	}
+
 	@Override
 	public EnumAction getItemUseAction(ItemStack stack){
 		return EnumAction.bow;
@@ -142,6 +156,7 @@ public class ItemMiscBow extends ItemBow {
 	
 	public void selectArrow(ItemStack itemstack){
 		this.selectedArrow = itemstack;
+		System.out.println(selectedArrow);
 	}
 	
 	public ItemStack getSelectedArrow(){

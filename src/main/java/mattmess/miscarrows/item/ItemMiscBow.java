@@ -49,7 +49,7 @@ public class ItemMiscBow extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || player.inventory.hasItem(MiscArrows.arrow))
+        if (flag || (player.inventory.hasItemStack(selectedArrow) && selectedArrow != null))
         {
             float f = (float)j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -96,8 +96,9 @@ public class ItemMiscBow extends ItemBow {
             	entityarrow.canBePickedUp = 2;
             }else{
             	selectedArrow.stackSize--;
-        		if(selectedArrow.stackSize == 0)
+        		if(selectedArrow.stackSize <= 0){
         			selectedArrow = null;
+        		}
             }
 
             if (!world.isRemote)
@@ -115,38 +116,42 @@ public class ItemMiscBow extends ItemBow {
 		
 	}
 
-	public ItemStack onItemRightClick(ItemStack par1ItemStack, World par2World, EntityPlayer par3EntityPlayer)
+	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		if(par3EntityPlayer.isSneaking()){
-			selectArrow(par1ItemStack, par3EntityPlayer);
-			return par1ItemStack;
+		if(selectedArrow == null || !player.inventory.hasItemStack(this.selectedArrow)){
+			selectFirstArrow(player.inventory);
 		}
-		if(selectedArrow == null || !par3EntityPlayer.inventory.hasItemStack(this.selectedArrow)){
-			selectFirstArrow(par3EntityPlayer.inventory);
+		if(player.isSneaking()){
+			selectArrow(itemstack, player);
+			return itemstack;
 		}
-        ArrowNockEvent event = new ArrowNockEvent(par3EntityPlayer, par1ItemStack);
+        ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())
         {
             return event.result;
         }
 
-        if (par3EntityPlayer.capabilities.isCreativeMode || par3EntityPlayer.inventory.hasItem(MiscArrows.arrow))
+        if(selectedArrow == null)
+        	return itemstack;
+        if (player.capabilities.isCreativeMode || player.inventory.hasItemStack(selectedArrow))
         {
-            par3EntityPlayer.setItemInUse(par1ItemStack, this.getMaxItemUseDuration(par1ItemStack));
+            player.setItemInUse(itemstack, this.getMaxItemUseDuration(itemstack));
         }
 
-        return par1ItemStack;
+        return itemstack;
     }
+	
 	private void selectFirstArrow(InventoryPlayer inventory) {
 		for(ItemStack stack : inventory.mainInventory){
-			if(stack == null)
+			if(stack == null || stack.getItem() == null)
 				continue;
 			if(stack.getItem().equals(MiscArrows.arrow)){
-				selectArrow(stack, inventory.player);
+				selectArrow(stack);
 				return;
 			}
 		}
+		//selectArrow(null);
 	}
 
 	@Override
@@ -165,7 +170,6 @@ public class ItemMiscBow extends ItemBow {
 	
 	private ArrayList<ItemStack> getArrowStacks(InventoryPlayer inventory){
 		ArrayList<ItemStack> types = Lists.newArrayList();
-		ArrayList<Item> items = Lists.newArrayList();
 		for(ItemStack item : inventory.mainInventory){
 			if(item == null) continue;
 			if(item.getItem().equals(MiscArrows.arrow))
@@ -178,6 +182,19 @@ public class ItemMiscBow extends ItemBow {
 						types.add(itemstack);
 				}
 			}
+		}
+		if(inventory.player.capabilities.isCreativeMode){
+			if(!types.contains(MiscArrows.explosiveArrow))
+				types.add(MiscArrows.explosiveArrow);
+			if(!types.contains(MiscArrows.fireArrow))
+				types.add(MiscArrows.fireArrow);
+			if(!types.contains(MiscArrows.iceArrow))
+				types.add(MiscArrows.iceArrow);
+			if(!types.contains(MiscArrows.slimeArrow))
+				types.add(MiscArrows.slimeArrow);
+			if(!types.contains(MiscArrows.teleportArrow))
+				types.add(MiscArrows.teleportArrow);
+			return types;
 		}
 		
 		

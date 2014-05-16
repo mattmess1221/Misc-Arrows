@@ -1,7 +1,8 @@
-package mattmess.miscarrows;
+package mattmess.miscarrows.item;
 
 import java.util.List;
 
+import mattmess.miscarrows.MiscArrows;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.item.Item;
@@ -38,6 +39,11 @@ public class ItemMiscArrow extends Item {
 			return item;
 		}
 		return super.getIconFromDamage(damage);
+	}
+	
+	@Override
+	public boolean hasEffect(ItemStack i){
+		return super.hasEffect(i);
 	}
 
 	public void registerIcons(IIconRegister icon) {
@@ -84,8 +90,5 @@ public class ItemMiscArrow extends Item {
 		list.add(MiscArrows.slimeArrow);
 	}
 
-	public void onUse() {
-
-	}
 
 }

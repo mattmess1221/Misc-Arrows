@@ -1,7 +1,8 @@
-package mattmess.miscarrows;
+package mattmess.miscarrows.gui;
 
 import java.util.List;
 
+import mattmess.miscarrows.item.ItemMiscBow;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.texture.TextureMap;

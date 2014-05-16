@@ -14,31 +14,33 @@ public class ContainerQuiver extends Container {
 			INV_END = INV_START + 26, HOTBAR_START = INV_END + 1,
 			HOTBAR_END = HOTBAR_START + 8;
 
-	public ContainerQuiver(EntityPlayer player,
-			InventoryPlayer inventoryPlayer, IInventory quiver) {
+	public ContainerQuiver(InventoryPlayer inventoryPlayer, IInventory quiver) {
 		this.inventory = (InventoryQuiver) quiver;
-		int i;
-		for (i = 0; i < 5; i++) {
-			addSlotToContainer(new Slot(this.inventory, i, 80 + (16 * i), 40));
-		}
-		// Player Inventory
-		for (i = 0; i < 3; ++i) {
-			for (int j = 0; j < 9; ++j) {
-				this.addSlotToContainer(new Slot(inventoryPlayer,
-						j + i * 9 + 9, 8 + j * 18, 84 + i * 18));
-			}
-		}
-		for (i = 0; i < 9; ++i) {
-			this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18,
-					142));
-		}
-		// End player inventory
+		byte b0 = 51;
+		int i;		
+		for (i = 0; i < inventory.getSizeInventory(); ++i)
+        {
+            this.addSlotToContainer(new Slot(inventory, i, 44 + i * 18, 20));
+        }
+
+        for (i = 0; i < 3; ++i)
+        {
+            for (int j = 0; j < 9; ++j)
+            {
+                this.addSlotToContainer(new Slot(inventoryPlayer, j + i * 9 + 9, 8 + j * 18, i * 18 + b0));
+            }
+        }
+
+        for (i = 0; i < 9; ++i)
+        {
+            this.addSlotToContainer(new Slot(inventoryPlayer, i, 8 + i * 18, 58 + b0));
+        }
 
 	}
 
 	@Override
 	public boolean canInteractWith(EntityPlayer player) {
-		return inventory.isUseableByPlayer(player);
+		return true;
 	}
 
 	@Override

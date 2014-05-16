@@ -7,3 +7,4 @@ item.misc_arrow.potion.name=Potion Arrow
 item.misc_arrow.teleport.name=Teleport Arrow
 item.misc_arrow.slime.name=Sticky Arrow
 item.quiver.name=Quiver
+itemGroup.miscarrows=Misc Arrows

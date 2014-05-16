@@ -1,7 +1,11 @@
-package mattmess.miscarrows;
+package mattmess.miscarrows.item;
 
 import java.util.Map;
 
+import mattmess.miscarrows.ContainerQuiver;
+import mattmess.miscarrows.InventoryQuiver;
+import mattmess.miscarrows.MiscArrows;
+import mattmess.miscarrows.gui.GuiQuiver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
@@ -24,8 +28,8 @@ public class ItemQuiver extends Item{
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player){
-		if(!world.isRemote)
-			player.openGui(MiscArrows.instance, MiscArrows.GUI_QUIVER_INV, world, (int)player.posX, (int)player.posY, (int)player.posZ);
+		if(world.isRemote)
+			Minecraft.getMinecraft().displayGuiScreen(new GuiQuiver(new ContainerQuiver(player.inventory, new InventoryQuiver(itemStack))));
 		return itemStack;
 		
 	}

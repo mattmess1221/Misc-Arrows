@@ -3,5 +3,6 @@
 	<classpathentry kind="src" path="src/main/java"/>
 	<classpathentry kind="src" path="src/main/resources"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/Minecraft"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/VoxelCam"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

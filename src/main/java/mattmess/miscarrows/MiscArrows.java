@@ -1,5 +1,8 @@
 package mattmess.miscarrows;
 
+import mattmess.miscarrows.item.ItemMiscArrow;
+import mattmess.miscarrows.item.ItemMiscBow;
+import mattmess.miscarrows.item.ItemQuiver;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -43,7 +46,6 @@ public class MiscArrows {
 	
 	@EventHandler
 	public void startup(FMLPreInitializationEvent event){
-		NetworkRegistry.INSTANCE.registerGuiHandler(instance, proxy);
 		
 		GameRegistry.registerItem(bow, "misc_bow");
 		GameRegistry.registerItem(arrow, "misc_arrow");

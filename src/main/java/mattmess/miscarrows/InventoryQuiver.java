@@ -1,5 +1,6 @@
 package mattmess.miscarrows;
 
+import mattmess.miscarrows.item.ItemMiscArrow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
@@ -110,7 +111,7 @@ public class InventoryQuiver implements IInventory {
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return player.getHeldItem() == invItem;
+		return true;
 	}
 
 	@Override
@@ -125,7 +126,7 @@ public class InventoryQuiver implements IInventory {
 
 	@Override
 	public boolean isItemValidForSlot(int var1, ItemStack var2) {
-		return (var2.getItem() instanceof ItemMiscArrow);
+		return var1 >= 4 ? true : var2.getItem() instanceof ItemMiscArrow;
 	}
 
 }

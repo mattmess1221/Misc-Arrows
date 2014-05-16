@@ -1,7 +1,11 @@
-package mattmess.miscarrows;
+package mattmess.miscarrows.item;
 
 import java.util.ArrayList;
 
+import mattmess.miscarrows.EntityMiscArrow;
+import mattmess.miscarrows.InventoryQuiver;
+import mattmess.miscarrows.MiscArrows;
+import mattmess.miscarrows.gui.GuiSelectArrow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;

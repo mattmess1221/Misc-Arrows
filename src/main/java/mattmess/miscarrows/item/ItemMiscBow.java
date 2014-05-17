@@ -47,10 +47,14 @@ public class ItemMiscBow extends ItemBow {
 	
 	@Override
 	public void onPlayerStoppedUsing(ItemStack stack, World world, EntityPlayer player, int i){
-
 		
 		int j = this.getMaxItemUseDuration(stack) - i;
 
+		if(player.isSneaking() && j < 3){
+			openSelectArrowGui(stack, player);
+			return;
+		}
+		
         ArrowLooseEvent event = new ArrowLooseEvent(player, stack, j);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())
@@ -128,14 +132,8 @@ public class ItemMiscBow extends ItemBow {
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		if(itemstack.stackTagCompound == null)
-			itemstack.stackTagCompound = new NBTTagCompound();
-		if(itemstack.stackTagCompound.getInteger("arrow") == 0 || (player.capabilities.isCreativeMode && itemstack.stackTagCompound.getInteger("arrow") != 0)){
+		if(itemstack.stackTagCompound.getInteger("arrow") == 0){
 			selectFirstArrow(player.inventory);
-		}
-		if(player.isSneaking() && world.isRemote){
-			openSelectArrowGui(itemstack, player);
-			return itemstack;
 		}
         ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
         MinecraftForge.EVENT_BUS.post(event);

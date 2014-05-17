@@ -91,18 +91,19 @@ public class MiscArrows {
 	
 	@SubscribeEvent
 	public void burnEvent(LivingHurtEvent event){
-		if(GameSettings.Options.DIFFICULTY.equals(EnumDifficulty.HARD)){
-		EntityLivingBase entity = event.entityLiving;
-		if(event.source.isFireDamage()){
-			World world = entity.worldObj;
-			int x = MathHelper.floor_double(entity.posX), y = MathHelper.floor_double(entity.posY), z = MathHelper.floor_double(entity.posZ);
-			Block block = world.getBlock(x, y-1, z);
-			Block block1 = world.getBlock(x, y, z);
-			if(Blocks.fire.getFlammability(block) > 0){
-				world.setBlock(x, y, z, Blocks.fire);
-			} if (Blocks.fire.getFlammability(block1) > 0)
-				world.setBlock(x, y+1, z, Blocks.fire);
+		if(event.entity.worldObj.difficultySetting.equals(EnumDifficulty.HARD)){
+			EntityLivingBase entity = event.entityLiving;
+			if(event.source.isFireDamage()){
+				System.out.println("FIRE DAMAGE");
+				World world = entity.worldObj;
+				int x = MathHelper.floor_double(entity.posX), y = MathHelper.floor_double(entity.posY), z = MathHelper.floor_double(entity.posZ);
+				Block block = world.getBlock(x, y-1, z);
+				Block block1 = world.getBlock(x, y, z);
+				if(Blocks.fire.getFlammability(block) > 0){
+					world.setBlock(x, y, z, Blocks.fire);
+				} if (Blocks.fire.getFlammability(block1) > 0)
+					world.setBlock(x, y+1, z, Blocks.fire);
+			}
 		}
-	}
 	}
 }

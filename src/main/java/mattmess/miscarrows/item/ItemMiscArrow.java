@@ -40,11 +40,6 @@ public class ItemMiscArrow extends Item {
 		}
 		return super.getIconFromDamage(damage);
 	}
-	
-	@Override
-	public boolean hasEffect(ItemStack i){
-		return super.hasEffect(i);
-	}
 
 	public void registerIcons(IIconRegister icon) {
 		super.registerIcons(icon);
@@ -81,13 +76,13 @@ public class ItemMiscArrow extends Item {
 	
 	@Override
 	public void getSubItems(Item item, CreativeTabs tab, List list) {
-		list.add(MiscArrows.explosiveArrow);
 		list.add(MiscArrows.fireArrow);
 		list.add(MiscArrows.iceArrow);
-		list.add(MiscArrows.itemArrow);
-		list.add(MiscArrows.potionArrow);
-		list.add(MiscArrows.teleportArrow);
 		list.add(MiscArrows.slimeArrow);
+		//list.add(MiscArrows.itemArrow);
+		//list.add(MiscArrows.potionArrow);
+		list.add(MiscArrows.teleportArrow);
+		list.add(MiscArrows.explosiveArrow);
 	}
 
 

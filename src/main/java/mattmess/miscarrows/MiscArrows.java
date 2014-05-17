@@ -4,6 +4,7 @@ import mattmess.miscarrows.item.ItemMiscArrow;
 import mattmess.miscarrows.item.ItemMiscBow;
 import mattmess.miscarrows.item.ItemQuiver;
 import net.minecraft.block.Block;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -11,6 +12,7 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.MathHelper;
+import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.ForgeDirection;
@@ -89,6 +91,7 @@ public class MiscArrows {
 	
 	@SubscribeEvent
 	public void burnEvent(LivingHurtEvent event){
+		if(GameSettings.Options.DIFFICULTY.equals(EnumDifficulty.HARD)){
 		EntityLivingBase entity = event.entityLiving;
 		if(event.source.isFireDamage()){
 			World world = entity.worldObj;
@@ -100,5 +103,6 @@ public class MiscArrows {
 			} if (Blocks.fire.getFlammability(block1) > 0)
 				world.setBlock(x, y+1, z, Blocks.fire);
 		}
+	}
 	}
 }

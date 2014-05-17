@@ -1,20 +1,30 @@
 package mattmess.miscarrows;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import mattmess.miscarrows.item.ItemMiscArrow;
 import mattmess.miscarrows.item.ItemMiscBow;
 import mattmess.miscarrows.item.ItemQuiver;
+import net.minecraft.block.Block;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.MathHelper;
+import net.minecraft.world.World;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.util.ForgeDirection;
+import net.minecraftforge.event.entity.living.LivingHurtEvent;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
+import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.registry.GameRegistry;
 
@@ -74,5 +84,21 @@ public class MiscArrows {
 		GameRegistry.addShapelessRecipe(itemArrow, Items.arrow, Items.leather);
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+	
+	@SubscribeEvent
+	public void burnEvent(LivingHurtEvent event){
+		EntityLivingBase entity = event.entityLiving;
+		if(event.source.isFireDamage()){
+			World world = entity.worldObj;
+			int x = MathHelper.floor_double(entity.posX), y = MathHelper.floor_double(entity.posY), z = MathHelper.floor_double(entity.posZ);
+			Block block = world.getBlock(x, y-1, z);
+			Block block1 = world.getBlock(x, y, z);
+			if(Blocks.fire.getFlammability(block) > 0){
+				world.setBlock(x, y, z, Blocks.fire);
+			} if (Blocks.fire.getFlammability(block1) > 0)
+				world.setBlock(x, y+1, z, Blocks.fire);
+		}
 	}
 }

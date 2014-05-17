@@ -1,12 +1,15 @@
 package mattmess.miscarrows;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockFire;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.projectile.EntityArrow;
 import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Container;
+import net.minecraft.item.ItemFlintAndSteel;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
@@ -76,7 +79,8 @@ public class EntityMiscArrow extends EntityArrow {
 		if(world.isRemote)
 			return;
 		int xd = MathHelper.floor_double(x), yd = MathHelper.floor_double(y), zd = MathHelper.floor_double(z);
-		world.setBlock(xd, yd, zd, Blocks.fire);
+		if(world.getBlock(xd, yd, zd).getMaterial().equals(Material.air))
+			world.setBlock(xd, yd, zd, Blocks.fire);
 		//this.type = Type.NONE;
 	}
 	

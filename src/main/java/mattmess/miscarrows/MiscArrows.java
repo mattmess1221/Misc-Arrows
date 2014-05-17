@@ -94,7 +94,6 @@ public class MiscArrows {
 		if(event.entity.worldObj.difficultySetting.equals(EnumDifficulty.HARD)){
 			EntityLivingBase entity = event.entityLiving;
 			if(event.source.isFireDamage()){
-				System.out.println("FIRE DAMAGE");
 				World world = entity.worldObj;
 				int x = MathHelper.floor_double(entity.posX), y = MathHelper.floor_double(entity.posY), z = MathHelper.floor_double(entity.posZ);
 				Block block = world.getBlock(x, y-1, z);

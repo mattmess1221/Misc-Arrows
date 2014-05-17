@@ -65,7 +65,7 @@ public class ItemMiscBow extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || (player.inventory.hasItem(MiscArrows.arrow) && stack.stackTagCompound.getInteger("arrow") != 0))
+        if (flag || (player.inventory.hasItem(MiscArrows.arrow) && this.getSelectedArrow(stack) != 0))
         {
             float f = (float)j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -82,7 +82,7 @@ public class ItemMiscBow extends ItemBow {
 
             if (!world.isRemote)
             {
-            EntityMiscArrow entityarrow = new EntityMiscArrow(world, player, f * 2.0F, stack.stackTagCompound.getInteger("arrow"));
+            EntityMiscArrow entityarrow = new EntityMiscArrow(world, player, f * 2.0F, this.getSelectedArrow(stack));
 
             if (f == 1.0F)
             {
@@ -144,7 +144,7 @@ public class ItemMiscBow extends ItemBow {
 
        // if(itemstack.stackTagCompound.getInteger("arrow") == 0)
        // 	return itemstack;
-        if (player.capabilities.isCreativeMode || player.inventory.hasItem(MiscArrows.arrow))
+        if (player.inventory.hasItem(MiscArrows.arrow))
         {
             player.setItemInUse(itemstack, this.getMaxItemUseDuration(itemstack));
         }
@@ -163,12 +163,10 @@ public class ItemMiscBow extends ItemBow {
 	}
 	
 	private void selectFirstArrow(InventoryPlayer inventory) {
-		if(inventory.player.capabilities.isCreativeMode)
-			return;
 		for(ItemStack stack : inventory.mainInventory){
 			if(stack == null || stack.getItem() == null)
 				continue;
-			if(stack.getItem().equals(MiscArrows.arrow) || stack.getItem().equals(Items.arrow)){
+			if(stack.getItem().equals(MiscArrows.arrow)){
 				selectArrow(inventory.getCurrentItem(),stack);
 				return;
 			}
@@ -192,8 +190,6 @@ public class ItemMiscBow extends ItemBow {
 	}
 	
 	public int getSelectedArrow(ItemStack bow){
-		if(bow.stackTagCompound == null)
-			bow.stackTagCompound = new NBTTagCompound();
 		return bow.stackTagCompound.getInteger("arrow");
 	}
 	
@@ -214,6 +210,7 @@ public class ItemMiscBow extends ItemBow {
 				}
 			}
 		}
+		/*
 		if(inventory.player.capabilities.isCreativeMode){
 			if(!types.contains(MiscArrows.explosiveArrow))
 				types.add(MiscArrows.explosiveArrow);
@@ -225,8 +222,8 @@ public class ItemMiscBow extends ItemBow {
 				types.add(MiscArrows.slimeArrow);
 			if(!types.contains(MiscArrows.teleportArrow))
 				types.add(MiscArrows.teleportArrow);
-			return types;
 		}
+		*/
 		
 		
 		return types;

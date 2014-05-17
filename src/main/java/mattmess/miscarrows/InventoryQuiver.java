@@ -17,16 +17,15 @@ public class InventoryQuiver implements IInventory {
 	
 	public InventoryQuiver(ItemStack itemstack){
 		this.invItem = itemstack;
-		if(!itemstack.hasTagCompound())
-			itemstack.setTagCompound(new NBTTagCompound());
-		readFromNBT(itemstack.getTagCompound());
+		if(itemstack.stackTagCompound == null)
+			itemstack.stackTagCompound = new NBTTagCompound();
 	}
 	
 	private void readFromNBT(NBTTagCompound tagCompound) {
-		NBTTagList items = tagCompound.getTagList("ItemInventory", Constants.NBT.TAG_COMPOUND);
+		NBTTagList items = tagCompound.getTagList("Inventory", Constants.NBT.TAG_COMPOUND);
 		for(int i = 0; i<items.tagCount(); i++){
 			NBTTagCompound item = (NBTTagCompound)items.getCompoundTagAt(i);
-			byte slot = item.getByte("Slot");
+			int slot = item.getInteger("Slot");
 			if(slot>=0 && slot < getSizeInventory())
 				inventory[slot] = ItemStack.loadItemStackFromNBT(item);
 		}
@@ -41,7 +40,7 @@ public class InventoryQuiver implements IInventory {
 				items.appendTag(item);
 			}
 		}
-		tagCompound.setTag("ItemInventory", items);
+		tagCompound.setTag("Inventory", items);
 	}
 	@Override
 	public int getSizeInventory() {
@@ -69,8 +68,6 @@ public class InventoryQuiver implements IInventory {
 	@Override
 	public ItemStack getStackInSlotOnClosing(int slot) {
 		ItemStack stack = getStackInSlot(slot);
-		if(stack != null)
-			setInventorySlotContents(slot, null);
 		return stack;
 	}
 
@@ -84,12 +81,12 @@ public class InventoryQuiver implements IInventory {
 
 	@Override
 	public String getInventoryName() {
-		return "Quiver";
+		return invItem.getDisplayName();
 	}
 
 	@Override
 	public boolean hasCustomInventoryName() {
-		return false;
+		return invItem.hasDisplayName();
 	}
 
 	@Override
@@ -111,22 +108,22 @@ public class InventoryQuiver implements IInventory {
 
 	@Override
 	public boolean isUseableByPlayer(EntityPlayer player) {
-		return true;
+		return player.getHeldItem().equals(invItem);
 	}
 
 	@Override
 	public void openInventory() {
-
+		readFromNBT(invItem.stackTagCompound);
 	}
 
 	@Override
 	public void closeInventory() {
-
+		//writeToNBT(invItem.stackTagCompound);
 	}
 
 	@Override
 	public boolean isItemValidForSlot(int var1, ItemStack var2) {
-		return var1 >= 4 ? true : var2.getItem() instanceof ItemMiscArrow;
+		return var2.getItem().equals(MiscArrows.arrow);
 	}
 
 }

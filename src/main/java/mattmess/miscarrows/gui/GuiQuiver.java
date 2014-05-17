@@ -27,16 +27,16 @@ public class GuiQuiver extends GuiContainer {
 	}
 	
 	public void drawScreen(int x, int y, int tick){
-		super.drawScreen(x, y, tick);
 		String s = this.inventory.getInventoryName();
-		this.fontRendererObj.drawString(s, this.xSize/2 - this.fontRendererObj.getStringWidth(s)/2, 0, 4210752);
-		this.fontRendererObj.drawString(I18n.format("container.inventory"), 26, this.xSize/2, 4210752);
+		super.drawScreen(x, y, tick);
 	}
 
 	@Override
 	protected void drawGuiContainerForegroundLayer(int x, int y){
 		super.drawGuiContainerForegroundLayer(x, y);
-		}
+		this.fontRendererObj.drawString(inventory.getInventoryName(), 8, 5, 4210752);
+		this.fontRendererObj.drawString(I18n.format("container.inventory"), 8, 39, 4210752);
+	}
 	
 	@Override
 	protected void drawGuiContainerBackgroundLayer(float var1, int var2,

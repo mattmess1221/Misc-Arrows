@@ -30,15 +30,9 @@ public class ItemQuiver extends Item{
 	
 	@Override
 	public ItemStack onItemRightClick(ItemStack itemStack, World world, EntityPlayer player){
-		openInv(itemStack, world, player);
-		return itemStack;
+		player.openGui(MiscArrows.instance, 1, world, 0, 0, 0);	
+		return super.onItemRightClick(itemStack, world, player);
 		
-	}
-
-	@SideOnly(Side.CLIENT)
-	private void openInv(ItemStack itemStack, World world, EntityPlayer player){
-		if(world.isRemote)
-			Minecraft.getMinecraft().displayGuiScreen(new GuiQuiver(new ContainerQuiver(player.inventory, new InventoryQuiver(itemStack))));
 	}
 	
 	public InventoryQuiver getInventory(ItemStack itemstack){

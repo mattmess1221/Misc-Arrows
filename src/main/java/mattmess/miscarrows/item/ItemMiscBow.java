@@ -144,8 +144,8 @@ public class ItemMiscBow extends ItemBow {
             return event.result;
         }
 
-        if(itemstack.stackTagCompound.getInteger("arrow") == 0)
-        	return itemstack;
+       // if(itemstack.stackTagCompound.getInteger("arrow") == 0)
+       // 	return itemstack;
         if (player.capabilities.isCreativeMode || player.inventory.hasItem(MiscArrows.arrow))
         {
             player.setItemInUse(itemstack, this.getMaxItemUseDuration(itemstack));
@@ -153,6 +153,16 @@ public class ItemMiscBow extends ItemBow {
 
         return itemstack;
     }
+	
+	private ItemStack getSelectedItemStack(InventoryPlayer inventory, ItemStack bow, int id){
+		ItemStack arrow;
+		for(ItemStack stack : inventory.mainInventory){
+			if(stack.getItem().equals(MiscArrows.arrow) && stack.getItemDamage() == id){
+				return stack;
+			}
+		}
+		return null;
+	}
 	
 	private void selectFirstArrow(InventoryPlayer inventory) {
 		if(inventory.player.capabilities.isCreativeMode)

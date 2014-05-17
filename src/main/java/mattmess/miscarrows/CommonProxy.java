@@ -19,20 +19,24 @@ public class CommonProxy implements IGuiHandler{
 
 				@Override
 				public boolean canInteractWith(EntityPlayer var1) {
-					// TODO Auto-generated method stub
 					return true;
 				}
 			
 		};
+		if(ID == 1){
+			return new ContainerQuiver(player.inventory, new InventoryQuiver(player.getHeldItem()));
+		}
 		return null;
 	}
 
 	@Override
 	public Object getClientGuiElement(int ID, EntityPlayer player, World world,
 			int x, int y, int z) {
-		// TODO Auto-generated method stub
 		if(ID == 0)
 			return new GuiSelectArrow(player.getHeldItem(), ItemMiscBow.getArrowStacks(player.inventory));
+		if(ID == 1){
+			return new GuiQuiver((ContainerQuiver) getServerGuiElement(ID, player, world, x, y, z));
+		}
 		return null;
 	}
 

@@ -29,12 +29,12 @@ public class PacketSelectArrow extends AbstractPacket {
 
 	@Override
 	public void handleClientSide(EntityPlayer player) {
-		
+
+		System.out.println(arrow);
 	}
 
 	@Override
 	public void handleServerSide(EntityPlayer player) {
-		// TODO Auto-generated method stub
 		if(player.getHeldItem().getItem() == MiscArrows.bow){
 			ItemMiscBow bow = (ItemMiscBow) player.getHeldItem().getItem();
 			bow.selectArrow(player, new ItemStack(Items.arrow, 1, arrow));

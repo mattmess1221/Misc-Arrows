@@ -63,10 +63,14 @@ public class ItemMiscBow extends ItemBow {
 		itemstack.stackTagCompound.setInteger("arrow", 0);
 	}
 	
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool){
+	private void createNBTCompound(ItemStack itemstack){
 		if(itemstack.stackTagCompound == null)
 			itemstack.stackTagCompound = new NBTTagCompound();
+	}
+	
+	@Override
+	public void addInformation(ItemStack itemstack, EntityPlayer player, List list, boolean bool){
+		createNBTCompound(itemstack);
 		int id = itemstack.stackTagCompound.getInteger("arrow");
 		list.add("Selected Arrow: " + EntityMiscArrow.Type.valueOf(id).name());
 	}
@@ -219,12 +223,9 @@ public class ItemMiscBow extends ItemBow {
 		System.out.println(tag);
 	}
 	
-	@Override
-	public String getItemStackDisplayName(ItemStack itemstack){
-		return super.getItemStackDisplayName(itemstack) + " [" + EntityMiscArrow.Type.valueOf(getSelectedArrow(itemstack))+"]";
-	}
-	
 	public int getSelectedArrow(ItemStack bow){
+		if(bow == null)
+			return 0;
 		return bow.stackTagCompound.getInteger("arrow");
 	}
 	

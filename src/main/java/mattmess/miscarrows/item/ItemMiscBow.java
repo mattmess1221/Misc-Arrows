@@ -139,7 +139,7 @@ public class ItemMiscBow extends ItemBow {
             if(flag){
             	entityarrow.canBePickedUp = 2;
             }else{
-            	this.eatItem(player.inventory, MiscArrows.arrow, getSelectedArrow(stack));
+            	this.eatItemWithDamage(player.inventory, MiscArrows.arrow, getSelectedArrow(stack));
             }
 
                 world.spawnEntityInWorld(entityarrow);
@@ -262,12 +262,15 @@ public class ItemMiscBow extends ItemBow {
 		return count;
 	}
 	
-	private void eatItem(InventoryPlayer inventory, Item item, int damage){
-		for(ItemStack itemstack : inventory.mainInventory){
+	private void eatItemWithDamage(InventoryPlayer inventory, Item item, int damage){
+		for(int i = 0;i<inventory.getSizeInventory(); i++){
+			ItemStack itemstack = inventory.mainInventory[i];
+			if(itemstack == null)
+				continue;
 			if(itemstack.getItem() == item && itemstack.getItemDamage() == damage){
 				itemstack.stackSize--;
 				if(itemstack.stackSize <=0)
-					itemstack = null;
+					inventory.setInventorySlotContents(i, null);
 				return;
 			}
 		}

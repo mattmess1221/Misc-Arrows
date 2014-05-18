@@ -10,8 +10,8 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -91,7 +91,7 @@ public class ItemMiscBow extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || (this.listHasArrow(player.inventory.mainInventory, getSelectedArrow(stack)) && this.getSelectedArrow(stack) != 0))
+        if (flag || (this.listHasArrow(player.inventory.mainInventory, getSelectedArrow(stack))))
         {
             float f = (float)j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -139,7 +139,7 @@ public class ItemMiscBow extends ItemBow {
             if(flag){
             	entityarrow.canBePickedUp = 2;
             }else{
-            	this.eatItemWithDamage(player.inventory, MiscArrows.arrow, getSelectedArrow(stack));
+            	this.eatItemWithDamage(player.inventory, getSelectedArrow(stack));
             }
 
                 world.spawnEntityInWorld(entityarrow);
@@ -158,7 +158,7 @@ public class ItemMiscBow extends ItemBow {
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		if(itemstack.stackTagCompound.getInteger("arrow") == 0 || !listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
+		if(!listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
 			selectFirstArrow(player.inventory);
 		}
         ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
@@ -170,7 +170,7 @@ public class ItemMiscBow extends ItemBow {
 
        // if(itemstack.stackTagCompound.getInteger("arrow") == 0)
        // 	return itemstack;
-        if (player.inventory.hasItem(MiscArrows.arrow))
+        if (this.listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack)))
         {
             player.setItemInUse(itemstack, this.getMaxItemUseDuration(itemstack));
         }
@@ -181,7 +181,8 @@ public class ItemMiscBow extends ItemBow {
 	private ItemStack getSelectedItemStack(InventoryPlayer inventory, ItemStack bow, int id){
 		ItemStack arrow;
 		for(ItemStack stack : inventory.mainInventory){
-			if(stack.getItem().equals(MiscArrows.arrow) && stack.getItemDamage() == id){
+			if(stack == null) continue;
+			if(isItemArrow(stack) && stack.getItemDamage() == id){
 				return stack;
 			}
 		}
@@ -190,9 +191,9 @@ public class ItemMiscBow extends ItemBow {
 	
 	private void selectFirstArrow(InventoryPlayer inventory) {
 		for(ItemStack stack : inventory.mainInventory){
-			if(stack == null || stack.getItem() == null)
+			if(stack == null)
 				continue;
-			if(stack.getItem().equals(MiscArrows.arrow)){
+			if(isItemArrow(stack)){
 				selectArrow(inventory.getCurrentItem(),stack);
 				return;
 			}
@@ -203,6 +204,7 @@ public class ItemMiscBow extends ItemBow {
 	public EnumAction getItemUseAction(ItemStack stack){
 		return EnumAction.bow;
 	}
+	
 	public void selectArrow(ItemStack bow, ItemStack arrow){
 		NBTTagCompound tag = bow.stackTagCompound;
 		if(arrow == null){
@@ -221,7 +223,7 @@ public class ItemMiscBow extends ItemBow {
 		ArrayList<ItemStack> types = Lists.newArrayList();
 		for(ItemStack item : inventory.mainInventory){
 			if(item == null) continue;
-			if(item.getItem().equals(MiscArrows.arrow) && !listHasArrow(types.toArray(new ItemStack[0]), item.getItemDamage())){
+			if(isItemArrow(item) && !listHasArrow(types.toArray(new ItemStack[0]), item.getItemDamage())){
 				ItemStack copy = item.copy();
 				copy.stackSize = getArrowCount(inventory, item.getItemDamage());
 				types.add(copy);
@@ -241,8 +243,7 @@ public class ItemMiscBow extends ItemBow {
 	
 	private static boolean listHasArrow(ItemStack[] mainInventory, int item){
 		for(ItemStack item1 : mainInventory){
-			if(item1 == null)
-				continue;
+			if(item1 == null) continue;
 			if(item1.getItemDamage() == item){
 				return true;
 			}
@@ -255,24 +256,28 @@ public class ItemMiscBow extends ItemBow {
 		for(ItemStack itemstack : inventory.mainInventory){
 			if(itemstack == null)
 				continue;
-			if(itemstack.getItem().equals(MiscArrows.arrow) && itemstack.getItemDamage() == damage){
+			if(isItemArrow(itemstack) && itemstack.getItemDamage() == damage){
 				count += itemstack.stackSize;
 			}
 		}
 		return count;
 	}
 	
-	private void eatItemWithDamage(InventoryPlayer inventory, Item item, int damage){
+	private void eatItemWithDamage(InventoryPlayer inventory, int damage){
 		for(int i = 0;i<inventory.getSizeInventory(); i++){
 			ItemStack itemstack = inventory.mainInventory[i];
 			if(itemstack == null)
 				continue;
-			if(itemstack.getItem() == item && itemstack.getItemDamage() == damage){
+			if(isItemArrow(itemstack) && itemstack.getItemDamage() == damage){
 				itemstack.stackSize--;
 				if(itemstack.stackSize <=0)
 					inventory.setInventorySlotContents(i, null);
 				return;
 			}
 		}
+	}
+	
+	private static boolean isItemArrow(ItemStack itemstack){
+		return itemstack.getItem() == Items.arrow || itemstack.getItem() == MiscArrows.arrow;
 	}
 }

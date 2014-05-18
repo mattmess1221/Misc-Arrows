@@ -76,10 +76,13 @@ public class PacketPipeline extends
 			player = this.getClientPlayer();
 			pkt.handleClientSide(player);
 			break;
+			
 		case SERVER:
 			INetHandler netHandler = ctx.channel().attr(NetworkRegistry.NET_HANDLER).get();
 			player = ((NetHandlerPlayServer) netHandler).playerEntity;
+			pkt.handleServerSide(player);
 			break;
+			
 		default:
 		}
 		

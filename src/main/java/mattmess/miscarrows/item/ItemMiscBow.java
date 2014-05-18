@@ -198,6 +198,7 @@ public class ItemMiscBow extends ItemBow {
 				return;
 			}
 		}
+		selectArrow(inventory.getCurrentItem(),null);
 	}
 
 	@Override
@@ -213,6 +214,11 @@ public class ItemMiscBow extends ItemBow {
 			tag.setInteger("arrow", arrow.getItemDamage());
 		}
 		System.out.println(tag);
+	}
+	
+	@Override
+	public String getItemStackDisplayName(ItemStack itemstack){
+		return super.getItemStackDisplayName(itemstack) + " [" + EntityMiscArrow.Type.valueOf(getSelectedArrow(itemstack))+"]";
 	}
 	
 	public int getSelectedArrow(ItemStack bow){
@@ -244,7 +250,7 @@ public class ItemMiscBow extends ItemBow {
 	private static boolean listHasArrow(ItemStack[] mainInventory, int item){
 		for(ItemStack item1 : mainInventory){
 			if(item1 == null) continue;
-			if(item1.getItemDamage() == item){
+			if(isItemArrow(item1) && item1.getItemDamage() == item){
 				return true;
 			}
 		}
@@ -264,7 +270,7 @@ public class ItemMiscBow extends ItemBow {
 	}
 	
 	private void eatItemWithDamage(InventoryPlayer inventory, int damage){
-		for(int i = 0;i<inventory.getSizeInventory(); i++){
+		for(int i = 0;i<inventory.mainInventory.length; i++){
 			ItemStack itemstack = inventory.mainInventory[i];
 			if(itemstack == null)
 				continue;

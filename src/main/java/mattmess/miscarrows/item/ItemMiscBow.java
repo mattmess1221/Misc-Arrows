@@ -37,6 +37,7 @@ public class ItemMiscBow extends ItemBow {
 		this.setUnlocalizedName("misc_bow");
 		this.setTextureName("miscarrows:misc_bow");
 		this.setCreativeTab(MiscArrows.tab);
+		this.setMaxDamage(512);
 	}
 	
 	@Override
@@ -162,9 +163,9 @@ public class ItemMiscBow extends ItemBow {
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		//if(!listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
-		//	selectFirstArrow(player);
-		//}
+		if(!listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
+			selectFirstArrow(player);
+		}
         ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())

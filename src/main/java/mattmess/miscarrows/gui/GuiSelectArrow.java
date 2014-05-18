@@ -47,7 +47,7 @@ public class GuiSelectArrow extends GuiScreen {
 		int iconsize = 16;
 		int size = arrows.size();
 		int i = 0;
-		int u = width/2 - size*23/2;
+		int u = width/2 - size*20/2;
 		int v = height/2 - 8;
 		for(ItemStack item : arrows){
 			this.buttonList.add(new GuiArrowButton(i, u+(20 * i), v, item));

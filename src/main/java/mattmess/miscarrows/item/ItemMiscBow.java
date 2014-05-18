@@ -5,6 +5,7 @@ import java.util.List;
 
 import mattmess.miscarrows.EntityMiscArrow;
 import mattmess.miscarrows.MiscArrows;
+import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,6 +15,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.ArrowLooseEvent;
@@ -21,13 +23,38 @@ import net.minecraftforge.event.entity.player.ArrowNockEvent;
 
 import com.google.common.collect.Lists;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
 public class ItemMiscBow extends ItemBow {
-	private int power;
+
+    public static final String[] bowPullIconNameArray = new String[] {"pulling_0", "pulling_1", "pulling_2"};
+	@SideOnly(Side.CLIENT)
+	private IIcon iconArray[];
+	
 	public ItemMiscBow(){
 		super();
 		this.setUnlocalizedName("misc_bow");
 		this.setTextureName("miscarrows:misc_bow");
 		this.setCreativeTab(MiscArrows.tab);
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public void registerIcons(IIconRegister icon){
+		this.itemIcon = icon.registerIcon(this.getIconString() + "_standby");
+        this.iconArray = new IIcon[bowPullIconNameArray.length];
+
+        for (int i = 0; i < this.iconArray.length; ++i)
+        {
+            this.iconArray[i] = icon.registerIcon(this.getIconString() + "_" + bowPullIconNameArray[i]);
+        }
+	}
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+	public IIcon getItemIconForUseDuration(int i){
+		return iconArray[i];
 	}
 	
 	@Override
@@ -64,7 +91,7 @@ public class ItemMiscBow extends ItemBow {
 
         boolean flag = player.capabilities.isCreativeMode || EnchantmentHelper.getEnchantmentLevel(Enchantment.infinity.effectId, stack) > 0;
 
-        if (flag || (player.inventory.hasItem(MiscArrows.arrow) && this.getSelectedArrow(stack) != 0))
+        if (flag || (this.listHasArrow(player.inventory.mainInventory, getSelectedArrow(stack)) && this.getSelectedArrow(stack) != 0))
         {
             float f = (float)j / 20.0F;
             f = (f * f + f * 2.0F) / 3.0F;
@@ -112,7 +139,7 @@ public class ItemMiscBow extends ItemBow {
             if(flag){
             	entityarrow.canBePickedUp = 2;
             }else{
-            	//player.inventory.
+            	this.eatItem(player.inventory, MiscArrows.arrow, getSelectedArrow(stack));
             }
 
                 world.spawnEntityInWorld(entityarrow);
@@ -131,7 +158,7 @@ public class ItemMiscBow extends ItemBow {
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		if(itemstack.stackTagCompound.getInteger("arrow") == 0){
+		if(itemstack.stackTagCompound.getInteger("arrow") == 0 || !listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
 			selectFirstArrow(player.inventory);
 		}
         ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
@@ -194,7 +221,7 @@ public class ItemMiscBow extends ItemBow {
 		ArrayList<ItemStack> types = Lists.newArrayList();
 		for(ItemStack item : inventory.mainInventory){
 			if(item == null) continue;
-			if(item.getItem().equals(MiscArrows.arrow) && !listHasItem(types, item.getItemDamage())){
+			if(item.getItem().equals(MiscArrows.arrow) && !listHasArrow(types.toArray(new ItemStack[0]), item.getItemDamage())){
 				ItemStack copy = item.copy();
 				copy.stackSize = getArrowCount(inventory, item.getItemDamage());
 				types.add(copy);
@@ -212,8 +239,10 @@ public class ItemMiscBow extends ItemBow {
 		return types;
 	}
 	
-	private static boolean listHasItem(List<ItemStack> list, int item){
-		for(ItemStack item1 : list){
+	private static boolean listHasArrow(ItemStack[] mainInventory, int item){
+		for(ItemStack item1 : mainInventory){
+			if(item1 == null)
+				continue;
 			if(item1.getItemDamage() == item){
 				return true;
 			}
@@ -231,5 +260,16 @@ public class ItemMiscBow extends ItemBow {
 			}
 		}
 		return count;
+	}
+	
+	private void eatItem(InventoryPlayer inventory, Item item, int damage){
+		for(ItemStack itemstack : inventory.mainInventory){
+			if(itemstack.getItem() == item && itemstack.getItemDamage() == damage){
+				itemstack.stackSize--;
+				if(itemstack.stackSize <=0)
+					itemstack = null;
+				return;
+			}
+		}
 	}
 }

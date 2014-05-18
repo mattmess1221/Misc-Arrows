@@ -62,6 +62,8 @@ public class EntityMiscArrow extends EntityArrow {
 			world.setBlock(x, y, z, Blocks.snow_layer);
 		} else if (block.getMaterial().equals(Material.water))
 			world.setBlock(x, y, z, Blocks.ice);
+		else if (block.equals(Blocks.fire))
+			world.setBlock(x, y, z, Blocks.air);
 	}
 	private void freeze(EntityLivingBase entity){
 		if(entity != null)
@@ -100,12 +102,10 @@ public class EntityMiscArrow extends EntityArrow {
 			
 	}
 
-
 	private void teleport(double posX, double posY, double posZ) {
 		shooter.setPositionAndUpdate(posX, posY, posZ);
 		shooter.fallDistance = 0.0F;
 		shooter.attackEntityFrom(DamageSource.fall, 5.0F);
-		world.playSoundEffect(posX, posY, posZ, "mob.endermen.portal", 1.0F, 1.0F);
 		this.type = Type.NONE;
 	}
 

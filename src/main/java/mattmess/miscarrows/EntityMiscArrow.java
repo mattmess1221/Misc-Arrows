@@ -32,8 +32,6 @@ public class EntityMiscArrow extends EntityArrow {
 		this.type = Type.valueOf(i);
 		if(type.equals(Type.FIRE))
 			this.setFire(100);
-		System.out.println(i);
-		System.out.println(type);
 	}
 	public EntityMiscArrow(World world, EntityPlayer player, float f, int arrow, Container inventory){
 		this(world, player, f, arrow);

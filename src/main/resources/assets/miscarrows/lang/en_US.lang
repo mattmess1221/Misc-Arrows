@@ -7,5 +7,5 @@ item.misc_arrow.item.name=Item Transport Arrow
 item.misc_arrow.potion.name=Potion Arrow
 item.misc_arrow.teleport.name=Teleport Arrow
 item.misc_arrow.slime.name=Sticky Arrow
-item.quiver.name=Quiver
+item.quiver.name=Quiver [WIP]
 itemGroup.miscarrows=Misc Arrows

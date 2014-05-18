@@ -79,7 +79,8 @@ public class EntityMiscArrow extends EntityArrow {
 		if(world.isRemote)
 			return;
 		int xd = MathHelper.floor_double(x), yd = MathHelper.floor_double(y), zd = MathHelper.floor_double(z);
-		if(world.getBlock(xd, yd, zd).getMaterial().equals(Material.air))
+		Block block = world.getBlock(xd, yd, zd);
+		if(block.getMaterial().equals(Material.air) || block.equals(Blocks.snow_layer))
 			world.setBlock(xd, yd, zd, Blocks.fire);
 		//this.type = Type.NONE;
 	}

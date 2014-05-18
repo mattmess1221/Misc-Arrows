@@ -77,7 +77,7 @@ public class MiscArrows {
 		GameRegistry.addRecipe(new ItemStack(bow, 1), new Object[]{"ggg", "gDg", "ggg", 'g', Items.gold_nugget, 'D', Items.bow});
 		GameRegistry.addRecipe(new ItemStack(quiver, 1), new Object[]{"lll", "l l", "lll", 'l', Items.leather});
 		
-		GameRegistry.addShapelessRecipe(fireArrow, Items.arrow, Items.magma_cream);
+		GameRegistry.addShapelessRecipe(fireArrow, Items.arrow, Items.blaze_powder);
 		GameRegistry.addShapelessRecipe(iceArrow, Items.arrow, Items.snowball);
 		GameRegistry.addShapelessRecipe(slimeArrow, Items.arrow, Items.slime_ball);
 		GameRegistry.addShapelessRecipe(teleportArrow, Items.arrow, Items.ender_pearl);

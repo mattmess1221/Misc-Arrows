@@ -1,8 +1,10 @@
 package mattmess.miscarrows.gui;
 
+import mattmess.miscarrows.MiscArrows;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.renderer.texture.TextureMap;
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -40,5 +42,6 @@ public class GuiArrowButton extends GuiButton {
 	public ItemStack getItemStack(){
 		return item;
 	}
+	
 
 }

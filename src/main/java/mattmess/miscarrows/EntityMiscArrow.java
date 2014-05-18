@@ -105,6 +105,7 @@ public class EntityMiscArrow extends EntityArrow {
 		shooter.setPositionAndUpdate(posX, posY, posZ);
 		shooter.fallDistance = 0.0F;
 		shooter.attackEntityFrom(DamageSource.fall, 5.0F);
+		world.playSoundEffect(posX, posY, posZ, "mob.endermen.portal", 1.0F, 1.0F);
 		this.type = Type.NONE;
 	}
 

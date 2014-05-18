@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mattmess.miscarrows.EntityMiscArrow;
-import mattmess.miscarrows.InventoryQuiver;
 import mattmess.miscarrows.MiscArrows;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.EnumAction;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -50,7 +49,7 @@ public class ItemMiscBow extends ItemBow {
 		
 		int j = this.getMaxItemUseDuration(stack) - i;
 
-		if(player.isSneaking() && j < 3){
+		if(player.isSneaking() && j <= 4){
 			openSelectArrowGui(stack, player);
 			return;
 		}
@@ -179,14 +178,12 @@ public class ItemMiscBow extends ItemBow {
 	}
 	public void selectArrow(ItemStack bow, ItemStack arrow){
 		NBTTagCompound tag = bow.stackTagCompound;
-		if(tag == null)
-			tag = new NBTTagCompound();
 		if(arrow == null){
 			tag.removeTag("arrow");
 		}else{
 			tag.setInteger("arrow", arrow.getItemDamage());
 		}
-		System.out.println(bow.getTagCompound());
+		System.out.println(tag);
 	}
 	
 	public int getSelectedArrow(ItemStack bow){
@@ -197,35 +194,42 @@ public class ItemMiscBow extends ItemBow {
 		ArrayList<ItemStack> types = Lists.newArrayList();
 		for(ItemStack item : inventory.mainInventory){
 			if(item == null) continue;
-			if(item.getItem().equals(MiscArrows.arrow))
-				types.add(item);
-			if(item.getItem().equals(Items.arrow))
-				types.add(item);
-			if(item.getItem().equals(MiscArrows.quiver)){
+			if(item.getItem().equals(MiscArrows.arrow) && !listHasItem(types, item.getItemDamage())){
+				ItemStack copy = item.copy();
+				copy.stackSize = getArrowCount(inventory, item.getItemDamage());
+				types.add(copy);
+			}
+			
+			/*if(item.getItem().equals(MiscArrows.quiver)){
 				ItemQuiver quiver = (ItemQuiver) item.getItem();
 				InventoryQuiver quivInv = quiver.getInventory(item);
 				for(ItemStack itemstack : quivInv.inventory){
 					if(itemstack != null)
 						types.add(itemstack);
 				}
+			}*/
+		}
+		return types;
+	}
+	
+	private static boolean listHasItem(List<ItemStack> list, int item){
+		for(ItemStack item1 : list){
+			if(item1.getItemDamage() == item){
+				return true;
 			}
 		}
-		/*
-		if(inventory.player.capabilities.isCreativeMode){
-			if(!types.contains(MiscArrows.explosiveArrow))
-				types.add(MiscArrows.explosiveArrow);
-			if(!types.contains(MiscArrows.fireArrow))
-				types.add(MiscArrows.fireArrow);
-			if(!types.contains(MiscArrows.iceArrow))
-				types.add(MiscArrows.iceArrow);
-			if(!types.contains(MiscArrows.slimeArrow))
-				types.add(MiscArrows.slimeArrow);
-			if(!types.contains(MiscArrows.teleportArrow))
-				types.add(MiscArrows.teleportArrow);
+		return false;
+	}
+
+	private static int getArrowCount(InventoryPlayer inventory, int damage){
+		int count = 0;
+		for(ItemStack itemstack : inventory.mainInventory){
+			if(itemstack == null)
+				continue;
+			if(itemstack.getItem().equals(MiscArrows.arrow) && itemstack.getItemDamage() == damage){
+				count += itemstack.stackSize;
+			}
 		}
-		*/
-		
-		
-		return types;
+		return count;
 	}
 }

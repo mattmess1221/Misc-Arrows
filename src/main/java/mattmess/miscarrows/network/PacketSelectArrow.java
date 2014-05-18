@@ -24,13 +24,12 @@ public class PacketSelectArrow extends AbstractPacket {
 	@Override
 	public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer) {
 		arrow = buffer.readInt();
-		MiscArrows.logger.info("Message Recieved, Captain!");
 	}
 
 	@Override
 	public void handleClientSide(EntityPlayer player) {
-
 		System.out.println(arrow);
+
 	}
 
 	@Override

@@ -4,11 +4,11 @@ import java.util.List;
 
 import mattmess.miscarrows.MiscArrows;
 import mattmess.miscarrows.item.ItemMiscBow;
+import mattmess.miscarrows.network.AbstractPacket;
 import mattmess.miscarrows.network.PacketSelectArrow;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -68,7 +68,8 @@ public class GuiSelectArrow extends GuiScreen {
 	public void actionPerformed(GuiButton button){
 		GuiArrowButton arrowbutton = (GuiArrowButton)button;
 		((ItemMiscBow) bow.getItem()).selectArrow(player, arrowbutton.getItemStack());
-		MiscArrows.packetPipeline.sendToServer(new PacketSelectArrow(arrowbutton.getItemStack().getItemDamage()));
+		AbstractPacket packet = new PacketSelectArrow(arrowbutton.getItemStack().getItemDamage());
+		MiscArrows.packetPipeline.sendToServer(packet);
 		mc.displayGuiScreen(null);
 	}
 	

@@ -162,9 +162,9 @@ public class ItemMiscBow extends ItemBow {
 
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
-		if(!listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
-			selectFirstArrow(player);
-		}
+		//if(!listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
+		//	selectFirstArrow(player);
+		//}
         ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
         MinecraftForge.EVENT_BUS.post(event);
         if (event.isCanceled())
@@ -202,7 +202,6 @@ public class ItemMiscBow extends ItemBow {
 				return;
 			}
 		}
-		selectArrow(player,null);
 	}
 
 	@Override
@@ -220,7 +219,6 @@ public class ItemMiscBow extends ItemBow {
 		}else{
 			tag.setInteger("arrow", arrow.getItemDamage());
 		}
-		System.out.println(tag);
 	}
 	
 	public int getSelectedArrow(ItemStack bow){

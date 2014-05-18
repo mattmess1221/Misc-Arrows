@@ -3,8 +3,8 @@ package mattmess.miscarrows;
 import mattmess.miscarrows.item.ItemMiscArrow;
 import mattmess.miscarrows.item.ItemMiscBow;
 import mattmess.miscarrows.item.ItemQuiver;
+import mattmess.miscarrows.network.PacketPipeline;
 import net.minecraft.block.Block;
-import net.minecraft.client.settings.GameSettings;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -15,7 +15,6 @@ import net.minecraft.util.MathHelper;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.util.ForgeDirection;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 
 import org.apache.logging.log4j.LogManager;
@@ -25,6 +24,7 @@ import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
 import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.SidedProxy;
+import cpw.mods.fml.common.event.FMLPostInitializationEvent;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.network.NetworkRegistry;
@@ -39,6 +39,8 @@ public class MiscArrows {
 	public static MiscArrows instance;
 	@SidedProxy(clientSide = "mattmess.miscarrows.ClientProxy", serverSide = "mattmess.miscarrows.CommonProxy")
 	public static CommonProxy proxy;
+	public static final PacketPipeline packetPipeline = new PacketPipeline();
+	
 	public static CreativeTabs tab = new CreativeTabs("miscarrows"){
 
 		@Override
@@ -86,7 +88,14 @@ public class MiscArrows {
 		GameRegistry.addShapelessRecipe(itemArrow, Items.arrow, Items.leather);
 		
 		NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
+		packetPipeline.initialize();
+		
 		MinecraftForge.EVENT_BUS.register(this);
+	}
+	
+	@EventHandler
+	public void postInit(FMLPostInitializationEvent event){
+		packetPipeline.postInitialize();
 	}
 	
 	@SubscribeEvent

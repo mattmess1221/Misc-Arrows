@@ -4,8 +4,10 @@ import java.util.List;
 
 import mattmess.miscarrows.MiscArrows;
 import mattmess.miscarrows.item.ItemMiscBow;
+import mattmess.miscarrows.network.PacketSelectArrow;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.item.ItemStack;
 import cpw.mods.fml.relauncher.Side;
@@ -14,10 +16,12 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class GuiSelectArrow extends GuiScreen {
 
 	private ItemStack bow;
+	private EntityPlayer player;
 	private List<ItemStack> arrows;
 
-	public GuiSelectArrow(ItemStack bow, List<ItemStack> arrows){
-		this.bow = bow;
+	public GuiSelectArrow(EntityPlayer player, List<ItemStack> arrows){
+		this.player = player;
+		this.bow = player.getHeldItem();
 		this.arrows = arrows;
 	}
 	
@@ -63,7 +67,8 @@ public class GuiSelectArrow extends GuiScreen {
 	@Override
 	public void actionPerformed(GuiButton button){
 		GuiArrowButton arrowbutton = (GuiArrowButton)button;
-		((ItemMiscBow) bow.getItem()).selectArrow(bow, arrowbutton.getItemStack());
+		((ItemMiscBow) bow.getItem()).selectArrow(player, arrowbutton.getItemStack());
+		MiscArrows.packetPipeline.sendToServer(new PacketSelectArrow(arrowbutton.getItemStack().getItemDamage()));
 		mc.displayGuiScreen(null);
 	}
 	

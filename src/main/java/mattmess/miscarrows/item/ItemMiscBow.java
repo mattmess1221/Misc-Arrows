@@ -159,7 +159,7 @@ public class ItemMiscBow extends ItemBow {
 	public ItemStack onItemRightClick(ItemStack itemstack, World world, EntityPlayer player)
     {
 		if(!listHasArrow(player.inventory.mainInventory, getSelectedArrow(itemstack))){
-			selectFirstArrow(player.inventory);
+			selectFirstArrow(player);
 		}
         ArrowNockEvent event = new ArrowNockEvent(player, itemstack);
         MinecraftForge.EVENT_BUS.post(event);
@@ -189,16 +189,16 @@ public class ItemMiscBow extends ItemBow {
 		return null;
 	}
 	
-	private void selectFirstArrow(InventoryPlayer inventory) {
-		for(ItemStack stack : inventory.mainInventory){
+	private void selectFirstArrow(EntityPlayer player) {
+		for(ItemStack stack : player.inventory.mainInventory){
 			if(stack == null)
 				continue;
 			if(isItemArrow(stack)){
-				selectArrow(inventory.getCurrentItem(),stack);
+				selectArrow(player,stack);
 				return;
 			}
 		}
-		selectArrow(inventory.getCurrentItem(),null);
+		selectArrow(player,null);
 	}
 
 	@Override
@@ -206,7 +206,10 @@ public class ItemMiscBow extends ItemBow {
 		return EnumAction.bow;
 	}
 	
-	public void selectArrow(ItemStack bow, ItemStack arrow){
+	public void selectArrow(EntityPlayer player, ItemStack arrow){
+		ItemStack bow = player.getHeldItem();
+		if(bow.getItem() != MiscArrows.bow)
+			return;
 		NBTTagCompound tag = bow.stackTagCompound;
 		if(arrow == null){
 			tag.removeTag("arrow");

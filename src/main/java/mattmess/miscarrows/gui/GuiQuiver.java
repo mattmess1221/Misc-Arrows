@@ -1,7 +1,7 @@
 package mattmess.miscarrows.gui;
 
-import mattmess.miscarrows.ContainerQuiver;
-import mattmess.miscarrows.InventoryQuiver;
+import mattmess.miscarrows.quiver.ContainerQuiver;
+import mattmess.miscarrows.quiver.InventoryQuiver;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.util.ResourceLocation;

@@ -2,10 +2,10 @@ package mattmess.miscarrows.item;
 
 import java.util.Map;
 
-import mattmess.miscarrows.ContainerQuiver;
-import mattmess.miscarrows.InventoryQuiver;
 import mattmess.miscarrows.MiscArrows;
 import mattmess.miscarrows.gui.GuiQuiver;
+import mattmess.miscarrows.quiver.ContainerQuiver;
+import mattmess.miscarrows.quiver.InventoryQuiver;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;

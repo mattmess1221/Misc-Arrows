@@ -1,5 +1,6 @@
-package mattmess.miscarrows;
+package mattmess.miscarrows.quiver;
 
+import mattmess.miscarrows.MiscArrows;
 import mattmess.miscarrows.item.ItemMiscArrow;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
